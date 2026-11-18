@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DataBP demo · Integrationals</title>
+  <link rel="stylesheet" href="https://static.hex.site/embed/embedStyles.css" />
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2933; background: #f7f8fa; }
+    main { max-width: 960px; margin: 0 auto; padding: 40px 24px 64px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p.lead { margin: 0 0 24px; color: #52606d; line-height: 1.5; }
+    ol.chain { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 32px; }
+    ol.chain li { background: #fff; border: 1px solid #d9e2ec; border-radius: 6px; padding: 6px 10px; font-size: 14px; }
+    .hex-embed iframe { width: 100%; max-width: 960px; height: 640px; background: #fff; }
+    footer { margin-top: 32px; font-size: 13px; color: #7b8794; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>DataBP demo</h1>
+    <p class="lead">A governed path from a SQL Server table to a live chart. The chart below reads the metric
+      <code>client_count</code> from the dbt Semantic Layer each time it runs, so it shows the same number the
+      Semantic Layer gives any other tool.</p>
+    <ol class="chain">
+      <li>SQL Server</li><li>Openflow</li><li>Snowflake</li><li>dbt</li><li>Semantic Layer</li><li>Hex</li>
+    </ol>
+    <div class="hex-embed">
+      <iframe width="800" height="600" style="border: none;" src="https://app.hex.tech/01a1eff9-7a35-764d-8355-d36074aff764/app/034zsY72SSwxONnqrKnmyC/latest?embedded=true"> </iframe>
+      <a href="https://hex.tech/?embed" target="_blank">
+        <img src="https://static.hex.site/embed/hex-logo-embed.png" alt="Hex - a modern data workspace for collaborative notebooks, data apps, dashboards, and reports."/>
+      </a>
+    </div>
+    <footer>Prepared by Integrationals. Demo data is synthetic.</footer>
+  </main>
+</body>
+</html>
