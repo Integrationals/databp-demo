@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market data: the business behind the DataBP demo</title>
+<style>
+:root{--bg:#fbfaf7;--ink:#22211e;--muted:#6b6963;--line:#c9c6bd;--card:#ffffff;
+--p-fill:#EEEDFE;--p-line:#534AB7;--p-ink:#3C3489;--p-sub:#534AB7;
+--d-fill:#E1F5EE;--d-line:#0F6E56;--d-ink:#085041;--d-sub:#0F6E56;
+--q-fill:#FAECE7;--q-line:#993C1D;--q-ink:#712B13;--q-sub:#993C1D}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1c1a;--ink:#ecebe6;--muted:#a3a19a;--line:#4a4944;--card:#252523;
+--p-fill:#3C3489;--p-line:#AFA9EC;--p-ink:#EEEDFE;--p-sub:#CECBF6;
+--d-fill:#085041;--d-line:#5DCAA5;--d-ink:#E1F5EE;--d-sub:#9FE1CB;
+--q-fill:#712B13;--q-line:#F0997B;--q-ink:#FAECE7;--q-sub:#F5C4B3}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+.crumbs{font-size:13px;color:var(--muted);margin-bottom:6px}
+.crumbs a{color:var(--muted)}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 14px}
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:inherit}
+.p rect{fill:var(--p-fill);stroke:var(--p-line)}.p .t{fill:var(--p-ink)}.p .s{fill:var(--p-sub)}
+.d rect{fill:var(--d-fill);stroke:var(--d-line)}.d .t{fill:var(--d-ink)}.d .s{fill:var(--d-sub)}
+.q rect{fill:var(--q-fill);stroke:var(--q-line)}.q .t{fill:var(--q-ink)}.q .s{fill:var(--q-sub)}
+.t{font-size:15px;font-weight:600}.s{font-size:13px}
+.arr{stroke:var(--muted);stroke-width:1.5;fill:none}
+.lead-line{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4;fill:none}
+.al{fill:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:15px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:600}
+td:first-child{color:var(--muted);width:28px}
+.note{color:var(--muted);font-size:14px;margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<div class="crumbs"><a href="./">DataBP demo</a> / The business</div>
+<h1>Market data: the business behind the demo</h1>
+<p class="lead">An exchange sells market data through a vendor to a subscriber. Four documents describe each subscriber; the app asks whether they agree, and what changed since the last close.</p>
+<div class="diagram">
+<svg viewBox="0 0 680 386" role="img" aria-labelledby="dt dd">
+<title id="dt">Market data and the north-star question</title>
+<desc id="dd">The exchange sells market data through a vendor to a subscriber. Four documents describe each subscriber: the license, the entitlement, the usage report and the invoice. The north star asks whether the four agree and what changed since the last close.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="p"><rect x="40" y="40" width="160" height="56" rx="8"/><text class="t" x="120" y="62" text-anchor="middle">Exchange</text><text class="s" x="120" y="82" text-anchor="middle">Sells market data</text></g>
+<g class="p"><rect x="260" y="40" width="160" height="56" rx="8"/><text class="t" x="340" y="62" text-anchor="middle">Vendor</text><text class="s" x="340" y="82" text-anchor="middle">Controls access</text></g>
+<g class="p"><rect x="480" y="40" width="160" height="56" rx="8"/><text class="t" x="560" y="62" text-anchor="middle">Subscriber</text><text class="s" x="560" y="82" text-anchor="middle">Firm that uses it</text></g>
+<text class="al" x="229" y="60" text-anchor="middle">data</text>
+<line class="arr" x1="202" y1="70" x2="256" y2="70" marker-end="url(#arrow)"/>
+<text class="al" x="449" y="60" text-anchor="middle">data</text>
+<line class="arr" x1="422" y1="70" x2="476" y2="70" marker-end="url(#arrow)"/>
+<line class="lead-line" x1="120" y1="96" x2="110" y2="170"/>
+<line class="lead-line" x1="340" y1="96" x2="263" y2="170"/>
+<line class="lead-line" x1="560" y1="96" x2="416" y2="170"/>
+<g class="d"><rect x="40" y="170" width="140" height="56" rx="8"/><text class="t" x="110" y="192" text-anchor="middle">License</text><text class="s" x="110" y="212" text-anchor="middle">Exchange grants</text></g>
+<g class="d"><rect x="193" y="170" width="140" height="56" rx="8"/><text class="t" x="263" y="192" text-anchor="middle">Entitlement</text><text class="s" x="263" y="212" text-anchor="middle">Vendor permits</text></g>
+<g class="d"><rect x="346" y="170" width="140" height="56" rx="8"/><text class="t" x="416" y="192" text-anchor="middle">Usage report</text><text class="s" x="416" y="212" text-anchor="middle">Units each month</text></g>
+<g class="d"><rect x="499" y="170" width="140" height="56" rx="8"/><text class="t" x="569" y="192" text-anchor="middle">Invoice</text><text class="s" x="569" y="212" text-anchor="middle">Amount billed</text></g>
+<line class="arr" x1="110" y1="226" x2="110" y2="286" marker-end="url(#arrow)"/>
+<line class="arr" x1="263" y1="226" x2="263" y2="286" marker-end="url(#arrow)"/>
+<line class="arr" x1="416" y1="226" x2="416" y2="286" marker-end="url(#arrow)"/>
+<line class="arr" x1="569" y1="226" x2="569" y2="286" marker-end="url(#arrow)"/>
+<g class="q"><rect x="40" y="290" width="599" height="56" rx="8"/><text class="t" x="340" y="312" text-anchor="middle">North star: do the four agree?</text><text class="s" x="340" y="332" text-anchor="middle">And what changed since the last close</text></g>
+</svg>
+</div>
+<table>
+<tr><th>#</th><th>Concept</th><th>What it is</th></tr>
+<tr><td>1</td><td>Market data</td><td>The prices and trades financial markets produce, sold to investment firms</td></tr>
+<tr><td>2</td><td>License</td><td>The right an exchange grants in its market data agreement</td></tr>
+<tr><td>3</td><td>Vendor</td><td>Controls which subscribers receive the exchange's data</td></tr>
+<tr><td>4</td><td>Subscriber and entitlement</td><td>The firm receiving data; the vendor's permission to receive it</td></tr>
+<tr><td>5</td><td>Counting the use</td><td>Unit of count; the monthly usage report; the declaration of use</td></tr>
+</table>
+<p class="note">Sources: TRG Screen, on revenue management for exchanges; the MEMX Market Data Agreement, section 4; an NYSE filing of 2010-05-12 on subscriber entitlement; Nasdaq European Data Policies and CME Group, on unit of count; Euronext Reporting Guidelines v1.6, section 2.3; the ICE Market Data Vendor Guide, section 2.4.1.</p>
+</main>
+</body>
+</html>
