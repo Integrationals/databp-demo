@@ -16,7 +16,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
-.crumbs{font-size:13px;color:var(--muted);margin-bottom:6px}
+.crumbs{font-size:13px;color:var(--muted);margin-bottom:6px}.crumbs a{color:var(--muted)}
 h1{font-size:22px;font-weight:600;margin:0 0 4px}
 .lead{color:var(--muted);margin:0 0 14px}
 .bar{display:flex;gap:8px;margin:10px 0 14px;flex-wrap:wrap}
@@ -45,7 +45,7 @@ td:first-child{color:var(--muted);width:28px}
 </head>
 <body>
 <main>
-<div class="crumbs" id="crumbs"></div>
+<div class="crumbs"><a href="./">DataBP demo</a> / <span id="crumbs"></span></div>
 <h1 id="title"></h1>
 <p class="lead" id="lead"></p>
 <div class="bar"><button id="up" type="button">Up one</button><button id="home" type="button">Start</button></div>
