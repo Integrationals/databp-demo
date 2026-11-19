@@ -13,6 +13,70 @@ import html, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGES = ["index.html", "business.html", "openflow.html"]
+GENERATED = ["tutorial.html"]
+
+# Private details masked when the tutorial is built for the public site;
+# Pilot keeps the item whole (Ray, 2026-11-19, answer 1a). Order matters.
+MASKS = [
+    (r"op://[^`\s)]+", "[vault item]"),
+    (r"[A-Za-z0-9-]+\.[a-z0-9]+\.[a-z0-9-]+\.rds\.amazonaws\.com", "[RDS endpoint]"),
+    (r"(?i)\bfiamfdn-igb87170\b", "[Snowflake account]"),
+    (r"\beg472\.(semantic-layer\.)?us1\.dbt\.com", "[dbt host]"),
+    (r"[A-Za-z0-9._%+-]+@integrationals\.com", "[email address]"),
+    (r"C:\\Users\\[^`\s,;)]+", "[local path]"),
+    (r"\b(?:\d{1,3}\.){3}\d{1,3}(?:/\d{1,2})?\b", "[IP address]"),
+    (r"\bsgr-[0-9a-f]+\b", "[security group entry]"),
+    (r"\brds!db-[0-9a-f-]+…?", "[secret name]"),
+    (r"\bm-[0-9a-f]{32}\b", "[id]"),
+    (r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", "[id]"),
+    (r"\b[0-9a-z]{26}\b", "[id]"),
+    (r"\b\d{11,}\b", "[id]"),
+    (r"app\.hex\.tech/[^\s`\"]+", "app.hex.tech/[app address]"),
+]
+
+
+def mask(text):
+    for pattern, repl in MASKS:
+        text = re.sub(pattern, repl, text)
+    return text
+
+
+def tutorial():
+    import markdown
+    src = (ROOT / "pilot/k111ki463.md").read_text()
+    origin = src.splitlines()[0]
+    body = mask(src.split("\n", 1)[1])
+    content = markdown.markdown(body, extensions=["tables", "fenced_code"])
+    m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version (\d+): (.*) -->", origin)
+    note = (f"Built from Pilot knowledge {m.group(1)} item {m.group(2)}, version {m.group(3)}, "
+            "as it stands: a working draft, published to be reviewed and improved, Pilot first. "
+            "Private details such as addresses, identifiers and paths are masked here; Pilot holds the whole.")
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The build tutorial · DataBP demo</title>
+<style>
+body{{margin:0}}
+main{{max-width:960px;margin:0 auto;padding:20px 24px 40px;line-height:1.65;font-size:16px}}
+.crumbs{{font-size:13px;color:var(--brand-muted)}} .crumbs a{{color:var(--brand-muted)}}
+.draft{{background:var(--brand-sky);border:1px solid var(--brand-line);border-radius:12px;padding:12px 16px;font-size:14px;margin:12px 0 20px}}
+table{{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0}} th,td{{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}}
+code{{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}}
+pre{{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto}} pre code{{background:none;padding:0}}
+</style>
+</head>
+<body>
+<main>
+<div class="crumbs"><a href="./">DataBP demo</a> / The build tutorial</div>
+{origin}
+<p class="draft">{html.escape(note)}</p>
+{content}
+</main>
+</body>
+</html>
+"""
 FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">'
 
 
@@ -73,7 +137,7 @@ def a_to_z():
 
 
 def build():
-    result = {}
+    result = {"tutorial.html": brand(tutorial())}
     for name in PAGES:
         text = (ROOT / name).read_text()
         text = brand(text)
