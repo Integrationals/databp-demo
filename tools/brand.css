@@ -1,0 +1,12 @@
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
+h1,h2,h3{color:var(--brand-ink);font-weight:600}
+a{color:var(--brand-blue)}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
+.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand-bar a{color:#fff;text-decoration:none;font-weight:600}
+.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
+.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}

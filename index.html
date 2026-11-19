@@ -17,8 +17,28 @@
     ul.diagrams { margin: 0 0 32px; padding-left: 20px; line-height: 1.8; }
     footer { margin-top: 32px; font-size: 13px; color: #7b8794; }
   </style>
+<!-- brand-style:start -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+<style>
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
+h1,h2,h3{color:var(--brand-ink);font-weight:600}
+a{color:var(--brand-blue)}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
+.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand-bar a{color:#fff;text-decoration:none;font-weight:600}
+.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
+.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+</style>
+<!-- brand-style:end -->
 </head>
 <body>
+<!-- brand-header:start -->
+<div class="brand-bar"><div class="in"><a href="./">DataBP demo</a><span class="brand-tag">A demo for DataBP, by Integrationals</span></div></div>
+<!-- brand-header:end -->
   <main>
     <h1>DataBP demo</h1>
     <p class="lead">A governed path from a SQL Server table to a live chart. The chart below reads the metric
@@ -32,13 +52,19 @@
       <li><a href="business.html" target="_blank" rel="noopener">The business: market data and entitlement and billing reconciliation</a></li>
       <li><a href="openflow.html" target="_blank" rel="noopener">The platform: Openflow BYOC in the DataBP lab, level by level</a></li>
     </ul>
+    <h2>The build tutorial</h2>
+    <ul class="diagrams">
+      <li><a href="tutorial.html" target="_blank" rel="noopener">Every step we took to build the platform, from SQL Server to Hex: a working draft</a></li>
+    </ul>
     <div class="hex-embed">
       <iframe width="800" height="600" style="border: none;" src="https://app.hex.tech/01a1eff9-7a35-764d-8355-d36074aff764/app/034zsY72SSwxONnqrKnmyC/latest?embedded=true"> </iframe>
       <a href="https://hex.tech/?embed" target="_blank">
         <img src="https://static.hex.site/embed/hex-logo-embed.png" alt="Hex - a modern data workspace for collaborative notebooks, data apps, dashboards, and reports."/>
       </a>
     </div>
-    <footer>Prepared by Integrationals. Demo data is synthetic.</footer>
   </main>
+<!-- brand-footer:start -->
+<div class="brand-foot"><div class="in">Built by Ray Serrano, Integrationals, as a demo for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. Demo data is synthetic.</div></div>
+<!-- brand-footer:end -->
 </body>
 </html>

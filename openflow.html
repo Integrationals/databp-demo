@@ -42,8 +42,28 @@ td:first-child{color:var(--muted);width:28px}
 .legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
 </style>
+<!-- brand-style:start -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+<style>
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
+h1,h2,h3{color:var(--brand-ink);font-weight:600}
+a{color:var(--brand-blue)}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
+.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand-bar a{color:#fff;text-decoration:none;font-weight:600}
+.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
+.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+</style>
+<!-- brand-style:end -->
 </head>
 <body>
+<!-- brand-header:start -->
+<div class="brand-bar"><div class="in"><a href="./">DataBP demo</a><span class="brand-tag">A demo for DataBP, by Integrationals</span></div></div>
+<!-- brand-header:end -->
 <main>
 <div class="crumbs"><a href="./">DataBP demo</a> / <span id="crumbs"></span></div>
 <h1 id="title"></h1>
@@ -187,5 +207,8 @@ document.getElementById("home").addEventListener("click",()=>go("architecture"))
 window.addEventListener("hashchange",render);
 render();
 </script>
+<!-- brand-footer:start -->
+<div class="brand-foot"><div class="in">Built by Ray Serrano, Integrationals, as a demo for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. Demo data is synthetic.</div></div>
+<!-- brand-footer:end -->
 </body>
 </html>
