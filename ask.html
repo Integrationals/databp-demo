@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ask Morgan · DataBP demo · Integrationals</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #3d4a57; background: #f7f8fa; }
+    main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { margin: 0 0 8px; font-size: 26px; color: #0f3952; }
+    p.lead { margin: 0 0 20px; line-height: 1.5; }
+    .chat { background: #fff; border: 1px solid #dbe4ee; border-radius: 14px; overflow: hidden; }
+    .chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #071139; color: #fff; }
+    .chat-head.off { opacity: .7; } .chat-head #status { font-size: 13px; color: #eaf6ff; margin-left: auto; }
+    .code { padding: 10px 14px; border-bottom: 1px solid #dbe4ee; font-size: 14px; }
+    .code input { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #dbe4ee; border-radius: 8px; margin: 6px 0 2px; }
+    .code small { color: #6b7785; }
+    .log { padding: 14px; max-height: 520px; overflow-y: auto; }
+    .msg { margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; line-height: 1.5; }
+    .msg.user { background: #eaf6ff; margin-left: 15%; } .msg.bot { background: #f4f6f8; margin-right: 8%; }
+    .msg.err { background: #fff4d6; } .msg p { margin: 0 0 6px; }
+    .ctable table { border-collapse: collapse; font-size: 14px; } .ctable td, .ctable th { border: 1px solid #dbe4ee; padding: 4px 8px; }
+    .qchips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .qchip { font-size: 12px; background: #fff; border: 1px solid #486a99; color: #0f3952; border-radius: 999px; padding: 2px 8px; }
+    .typing { margin: 0 0 12px; color: #6b7785; font-size: 14px; } .wait-row { display: flex; align-items: center; gap: 8px; }
+    .face.bob { animation: bob 1.4s ease-in-out infinite; } @keyframes bob { 50% { transform: translateY(-3px); } }
+    .sugg { padding: 0 14px 10px; } .sugg-label { font-size: 13px; color: #6b7785; margin: 0 0 6px; }
+    .sugg button.s { display: block; width: 100%; text-align: left; margin: 0 0 6px; padding: 8px 10px; border: 1px solid #dbe4ee; border-radius: 10px; background: #fff; cursor: pointer; color: #0f3952; }
+    .sugg-toggle { display: none; } .sugg.folded button.s, .sugg.folded .sugg-label { display: none; }
+    .sugg.folded .sugg-toggle { display: inline-block; border: 0; background: none; color: #486a99; cursor: pointer; padding: 0; }
+    .sugg.folded.open button.s { display: block; }
+    .compose { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid #dbe4ee; }
+    .compose textarea { flex: 1; min-height: 44px; padding: 8px; border: 1px solid #dbe4ee; border-radius: 8px; font: inherit; }
+    .btn { background: #ffbe0c; color: #033953; font-weight: 600; border: 0; border-radius: 10px; padding: 0 18px; cursor: pointer; }
+    .btn:disabled { opacity: .5; cursor: default; }
+  </style>
+<!-- brand-style:start -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+<style>
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
+h1,h2,h3{color:var(--brand-ink);font-weight:600}
+a{color:var(--brand-blue)}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
+.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand-bar a{color:#fff;text-decoration:none;font-weight:600}
+.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
+.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+</style>
+<!-- brand-style:end -->
+</head>
+<body>
+<!-- brand-header:start -->
+<div class="brand-bar"><div class="in"><a href="./">DataBP demo</a><span class="brand-tag">A demo for DataBP, by Integrationals</span></div></div>
+<!-- brand-header:end -->
+  <main>
+    <h1>Ask Morgan</h1>
+    <p class="lead">Morgan answers questions about the entitlement and billing reconciliation in your own words. Every number she gives comes from a query she runs against the dbt Semantic Layer, the same metrics the dashboard reads, and the query is shown under the answer. All data is synthetic.</p>
+    <div class="chat" id="chat" data-url="https://sb7cvpnb27unuey2nb2xnngbn40nzqwb.lambda-url.us-east-1.on.aws/" data-env="production">
+      <div class="chat-head off" id="chat-head"><svg class="face" viewBox="208 33 124 124" width="34" height="34" aria-hidden="true"><circle cx="270" cy="95" r="62" fill="#eaf6ff"/><circle cx="270" cy="60" r="11" fill="#4a3426"/><ellipse cx="270" cy="92" rx="27" ry="30" fill="#4a3426"/><path d="M226 150 C 232 124, 308 124, 314 150 Q270 162 226 150 Z" fill="#071139"/><rect x="262" y="112" width="16" height="14" fill="#e2b48f"/><polygon points="258,126 282,126 270,142" fill="#ffffff"/><path d="M256 126 Q270 136 284 126 L280 134 Q270 140 260 134 Z" fill="#ffbe0c"/><ellipse cx="270" cy="95" rx="21" ry="25" fill="#e2b48f"/><path d="M249 90 C 252 70, 290 68, 292 92 C 282 80, 262 78, 249 90 Z" fill="#4a3426"/><circle cx="249" cy="104" r="2.5" fill="#ffbe0c"/><circle cx="291" cy="104" r="2.5" fill="#ffbe0c"/><circle cx="262" cy="97" r="2" fill="#071139"/><circle cx="278" cy="97" r="2" fill="#071139"/><path d="M262 108 Q270 116 278 108" fill="none" stroke="#071139" stroke-width="2" stroke-linecap="round"/></svg><b>Morgan</b><span id="status"></span></div>
+      <div class="code"><label for="code"><b>Access code</b></label><input id="code" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" placeholder="the code Ray sent you"><small>The access code Ray sent you. This page remembers it until you close the tab.</small></div>
+      <div class="log" id="log" aria-live="polite"><div class="msg bot"><p>Hi, I'm Morgan. Ask me about the reconciliation in your own words: what the disagreements cost, who they are, and how one was found. Every number I give comes from a query, and I'll show you which.</p></div></div>
+      <div class="sugg" id="sugg"><p class="sugg-label">To start, tap one of these, or type your own below.</p><button type="button" class="sugg-toggle" id="sugg-toggle">Suggestions</button><button type="button" class="s">What did October's disagreements cost?</button><button type="button" class="s">Why is subscriber 43 unbilled in October?</button><button type="button" class="s">Which check fails most often, and for whom?</button><button type="button" class="s">How does November compare with October?</button></div>
+      <div class="compose"><textarea id="q" maxlength="2000" placeholder="Ask about the reconciliation" aria-label="Your question"></textarea><button type="button" class="btn" id="send">Ask</button></div>
+    </div>
+<script>
+(function(){
+var url=(new URLSearchParams(location.search).get('chat'))||document.getElementById('chat').dataset.url||'';
+var log=document.getElementById('log'),ta=document.getElementById('q'),send=document.getElementById('send'),code=document.getElementById('code');
+var head=document.getElementById('chat-head'),status=document.getElementById('status'),history=[];
+try{var qc=new URLSearchParams(location.search).get('code');if(qc){sessionStorage.setItem('morgan_code',qc);window.history.replaceState(null,'',location.pathname+location.hash);}code.value=sessionStorage.getItem('morgan_code')||'';}/* D-73: the code from the address, stored for the tab */catch(e){}
+function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function inl(s){return s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+function md(t){var lines=esc(t).split('\n'),out=[],list=null,i=0;
+ function close(){if(list){out.push('</'+list+'>');list=null;}}
+ while(i<lines.length){var l=lines[i];
+  if(/^\s*\|.*\|\s*$/.test(l)){close();var rows=[];
+   while(i<lines.length&&(/^\s*\|.*\|\s*$/.test(lines[i])||!lines[i].trim())){if(lines[i].trim())rows.push(lines[i]);i++;}
+   var cells=function(r){return r.trim().replace(/^\||\|$/g,'').split('|').map(function(c){return inl(c.trim());});};
+   var body=rows.filter(function(r){return !/^\s*\|[\s:|-]+\|\s*$/.test(r);});
+   var h=cells(body[0]),bd=body.slice(1).map(cells);
+   out.push('<div class="ctable"><table><thead><tr>'+h.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>'+bd.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>');
+   continue;}
+  var m=l.match(/^\s*(?:[-*]|\d+[.)])\s+(.*)/);
+  if(m){var kind=/^\s*\d/.test(l)?'ol':'ul';if(list!==kind){close();list=kind;out.push('<'+kind+'>');}out.push('<li>'+inl(m[1])+'</li>');}
+  else{close();if(l.trim())out.push('<p>'+inl(l.replace(/^#+\s*/,''))+'</p>');}
+  i++;}
+ close();return out.join('');}
+function add(cls,html){var d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
+function setOn(on){head.classList.toggle('off',!on);status.textContent=on?'Answering from '+(document.getElementById('chat').dataset.env||'production'):'Not connected yet: the assistant joins this page shortly';send.disabled=!on;ta.disabled=!on;}
+setOn(!!url);
+ if(url){fetch(url,{method:'GET'}).catch(function(){});}  // wake the Ask function before the first question (design D-69)
+var REFUSE={access_code:'That access code was not accepted. Check it and try again.',daily_cap:'Today\'s limit of questions has been reached. Please try again tomorrow.',too_long:'That question is too long. Please shorten it.',upstream:'The assistant could not reach the data just now. Please try again in a moment.'};
+function evidence(b){var chips=(b.queries||[]).filter(function(q){return q.label;}).map(function(q){var g=(q.group_by_labels||[]).filter(Boolean);return '<span class="qchip">'+esc(q.label)+(g.length?' by '+esc(g.join(', ')):'')+'</span>';}).join('');
+ return chips?'<div class="qchips" title="The queries behind this answer">'+chips+'</div>':'';}
+async function stream(r,t){
+ var reader=r.body.getReader(),decoder=new TextDecoder(),buffer='',reply='',done=null,failure=null,bot=null;
+ function consume(text){
+  buffer+=text;var parts=buffer.split(/\r?\n\r?\n/);buffer=parts.pop();
+  parts.forEach(function(block){
+   var kind='message',data=[];
+   block.split(/\r?\n/).forEach(function(line){if(line.indexOf('event:')===0)kind=line.slice(6).trim();else if(line.indexOf('data:')===0)data.push(line.slice(5).trim());});
+   if(!data.length)return;var b=JSON.parse(data.join('\n'));
+   if(kind==='delta'){reply+=b.text||'';if(!bot){t.remove();bot=add('bot','');}bot.innerHTML=md(reply);log.scrollTop=log.scrollHeight;}
+   else if(kind==='done')done=b;else if(kind==='error')failure=b.error||'upstream';
+  });
+ }
+ try{
+  while(true){var next=await reader.read();if(next.done)break;consume(decoder.decode(next.value,{stream:true}));}
+  consume(decoder.decode()+'\n\n');
+ }catch(e){if(bot)bot.remove();throw e;}
+ if(failure)throw new Error(failure);if(!done)throw new Error('upstream');
+ t.remove();history.push({role:'assistant',content:done.reply});
+ var rendered=md(done.reply)+evidence(done);if(bot)bot.innerHTML=rendered;else add('bot',rendered);log.scrollTop=log.scrollHeight;
+}
+async function ask(text){
+ if(!url||!text.trim())return;
+ var c=code.value.trim(); if(!c){add('err','Enter the access code Ray sent you first.');code.focus();return;}
+ try{sessionStorage.setItem('morgan_code',c);}catch(e){}
+ var sg=document.getElementById('sugg'); if(sg)sg.classList.add('folded');  // design D-68
+ var isFirst=history.length===0, ho=document.querySelector('.chat-head .face'), OWL=ho?ho.outerHTML.replace('class="face"','class="face bob"'):'';  // CR-27: the first answer explains its wait while it waits
+ history.push({role:'user',content:text}); add('user',esc(text)); ta.value='';
+ var t=document.createElement('div');t.className='typing';t.innerHTML='<span class="wait-row">'+OWL+'<span class="shim"></span></span><span class="shim-sub"></span>';log.appendChild(t);log.scrollTop=log.scrollHeight;
+ var steps=(isFirst?[['Waking Morgan\u2026','The first answer takes a little longer while Morgan starts.'],['Waking Morgan\u2026','The first answer takes a little longer while Morgan starts.']]:[]).concat([['Morgan is reading the Semantic Layer\u2026',''],['Morgan is running the query\u2026',''],['Morgan is writing the answer\u2026','']]),si=0;
+ function step(){if(!t.isConnected||t.className!=='typing'){clearInterval(iv);return;}t.querySelector('.shim').textContent=steps[si][0];t.lastChild.textContent=steps[si][1];si=Math.min(si+1,steps.length-1);}
+ var iv=setInterval(step,1800);step();  // CR-27: a moving line while she waits
+ send.disabled=true;
+ for(var attempt=0;attempt<3;attempt++){
+  try{var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Accept':'text/event-stream'},body:JSON.stringify({access_code:c,messages:history})});
+   var contentType=r.headers.get('content-type')||'';
+   if(r.ok&&contentType.indexOf('text/event-stream')!==-1){await stream(r,t);break;}
+   var b=await r.json().catch(function(){return{error:'upstream'};});
+   if(r.status===429&&b.error!=='daily_cap'&&attempt<2){await new Promise(function(z){setTimeout(z,800*(attempt+1));});continue;}
+   t.remove();
+   if(!r.ok||b.error){history.pop();add('err',REFUSE[b.error]||REFUSE.upstream);}
+   else{history.push({role:'assistant',content:b.reply});add('bot',md(b.reply)+evidence(b));}
+   break;
+  }catch(e){if(attempt<2){await new Promise(function(z){setTimeout(z,800*(attempt+1));});continue;}t.remove();history.pop();add('err',REFUSE.upstream);}
+ }
+ send.disabled=!url;ta.focus();
+}
+send.addEventListener('click',function(){ask(ta.value);});
+ta.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(ta.value);}});
+document.querySelectorAll('.sugg button.s').forEach(function(bt){bt.addEventListener('click',function(){document.getElementById('sugg').classList.remove('open');if(url)ask(bt.textContent);else{ta.value=bt.textContent;}});});
+document.getElementById('sugg-toggle').addEventListener('click',function(){document.getElementById('sugg').classList.toggle('open');});
+})();
+</script>
+  </main>
+<!-- brand-footer:start -->
+<div class="brand-foot"><div class="in">Built by Ray Serrano, Integrationals, as a demo for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. Demo data is synthetic.</div></div>
+<!-- brand-footer:end -->
+</body>
+</html>

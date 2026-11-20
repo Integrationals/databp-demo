@@ -12,7 +12,7 @@ built from. Run from the repository root:
 import html, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PAGES = ["index.html", "business.html", "openflow.html"]
+PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
 GENERATED = ["tutorial.html"]
 
 # Private details masked when the tutorial is built for the public site;
