@@ -91,8 +91,12 @@ def band(crumb, title, lead):
     if crumb:
         trail = "".join(f' / <a href="{h}">{html.escape(t)}</a>' for t, h in crumb[:-1]) + f" / {html.escape(crumb[-1][0])}"
         crumbs = f'<div class="crumbs"><a href="./">DataBP POC</a>{trail}</div>'
+    face = (ROOT / "tools/morgan_face.svg").read_text().strip() if title == "Ask Morgan" else ""
+    head = f'<h1>{html.escape(title)}</h1>'
+    if face:   # Morgan's portrait beside her name: the human side of the agent (Ray, 2026-11-20 13:02 ET)
+        head = f'<div class="band-title">{face}{head}</div>'
     return (f'<section class="page-band"><div class="in">{crumbs}'
-            f'<h1>{html.escape(title)}</h1><p class="lead">{html.escape(lead)}</p></div></section>')
+            f'{head}<p class="lead">{html.escape(lead)}</p></div></section>')
 
 
 def render(item, strip_header=False):

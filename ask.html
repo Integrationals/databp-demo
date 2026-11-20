@@ -69,6 +69,9 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
 .page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
 .page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}
+.page-band .band-title{display:flex;align-items:center;gap:18px;margin:0 0 10px}
+.page-band .band-title h1{margin:0}
+.page-band .band-face{flex:none;border-radius:50%;background:var(--brand-sky);box-shadow:0 0 0 3px var(--brand-yellow)}
 </style>
 <!-- brand-style:end -->
 </head>
@@ -83,7 +86,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <!-- page-band:start -->
-<section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / Ask Morgan</div><h1>Ask Morgan</h1><p class="lead">Morgan answers questions about the reconciliation in your own words. Every number comes from a query she runs against the dbt Semantic Layer, the same metrics the app reads, and the query is shown under the answer.</p></div></section>
+<section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / Ask Morgan</div><div class="band-title"><svg class="band-face" viewBox="208 33 124 124" width="84" height="84" aria-hidden="true"><circle cx="270" cy="95" r="62" fill="#eaf6ff"/><circle cx="270" cy="60" r="11" fill="#4a3426"/><ellipse cx="270" cy="92" rx="27" ry="30" fill="#4a3426"/><path d="M226 150 C 232 124, 308 124, 314 150 Q270 162 226 150 Z" fill="#071139"/><rect x="262" y="112" width="16" height="14" fill="#e2b48f"/><polygon points="258,126 282,126 270,142" fill="#ffffff"/><path d="M256 126 Q270 136 284 126 L280 134 Q270 140 260 134 Z" fill="#ffbe0c"/><ellipse cx="270" cy="95" rx="21" ry="25" fill="#e2b48f"/><path d="M249 90 C 252 70, 290 68, 292 92 C 282 80, 262 78, 249 90 Z" fill="#4a3426"/><circle cx="249" cy="104" r="2.5" fill="#ffbe0c"/><circle cx="291" cy="104" r="2.5" fill="#ffbe0c"/><circle cx="262" cy="97" r="2" fill="#071139"/><circle cx="278" cy="97" r="2" fill="#071139"/><path d="M262 108 Q270 116 278 108" fill="none" stroke="#071139" stroke-width="2" stroke-linecap="round"/></svg><h1>Ask Morgan</h1></div><p class="lead">Morgan answers questions about the reconciliation in your own words. Every number comes from a query she runs against the dbt Semantic Layer, the same metrics the app reads, and the query is shown under the answer.</p></div></section>
 <!-- page-band:end -->
   <main>
     <div class="chat" id="chat" data-url="https://sb7cvpnb27unuey2nb2xnngbn40nzqwb.lambda-url.us-east-1.on.aws/" data-env="production">
