@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
-"""Build the DataBP demo site's generated parts from their sources.
+"""Build the DataBP POC site's generated pages from their sources.
 
-Sources: tools/brand.css, tools/header.html, tools/footer.html (the brand),
-and pilot/*.md, each a copy of one Pilot item, its first line naming the
-item and version. Pilot is the source; the copy here is what the page was
-built from. Run from the repository root:
+Sources: tools/brand.css, tools/header.html, tools/footer.html and tools/morgan_face.svg (the look),
+and Pilot items read through the Pilot connector into a folder outside the repository (PILOT_COPIES,
+by default ~/.cache/databp-site/pilot), one file per item named k111ki<item>.md, its first line naming
+the item and version. No Pilot text is committed: only the built pages, with private details masked.
+Run from the repository root:
 
     python3 tools/build.py          rebuild the pages
     python3 tools/build.py --check  exit 1 if any page differs from a rebuild
 """
-import html, re, sys, pathlib
+import html, os, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# The Pilot items the pages are built from are read through the Pilot connector into this folder, outside the
+# repository; no Pilot text is ever committed (Ray, 2026-11-20 13:35 ET: everything goes via the Pilot connector).
+SOURCES = pathlib.Path(os.environ.get("PILOT_COPIES", pathlib.Path.home() / ".cache/databp-site/pilot"))
 PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
-GENERATED = ["tutorial.html", "build-log.html", "documents.html"]  # and one page per DOCS item
+GENERATED = ["build-log.html", "documents.html", "next-steps.html"]  # and one page per DOCS item
 
-# Private details masked when the tutorial is built for the public site;
+# Private details masked when a Pilot item is built for the public site;
 # Pilot keeps the item whole (Ray, 2026-11-19, answer 1a). Order matters.
 MASKS = [
     (r"op://[^`\s)]+", "[vault item]"),
@@ -53,10 +57,11 @@ DOCS = [   # the branch documents published on the site, by effort, in delivery 
 ]
 
 PAGE_CSS = """body{margin:0}
-.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:anywhere}
+.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .doc h2{margin-top:36px} .doc h3{margin-top:26px}
 .doc table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px;display:block;overflow-x:auto}
-.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}
+.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:break-word;word-break:normal;min-width:9ch}
+.doc td code,.doc th code{overflow-wrap:anywhere}
 .doc code{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
 .doc pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto} .doc pre code{background:none;padding:0}
 .note{background:var(--brand-sky);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 24px}"""
@@ -85,20 +90,50 @@ def page(title, crumb, lead, content, note=""):
 """
 
 
+def morgan_face(cls, size=84, uid="mg"):
+    """Morgan's portrait (tools/morgan_face.svg), with its own class, size and gradient ids."""
+    svg = (ROOT / "tools/morgan_face.svg").read_text().strip()
+    svg = svg.replace('class="morgan"', f'class="morgan {cls}"').replace('width="84" height="84"', f'width="{size}" height="{size}"')
+    return svg.replace('id="mg-', f'id="{uid}-').replace('url(#mg-', f'url(#{uid}-')
+
+
 def band(crumb, title, lead):
     """The navy title band every page but the home page opens with."""
     crumbs = ""
     if crumb:
         trail = "".join(f' / <a href="{h}">{html.escape(t)}</a>' for t, h in crumb[:-1]) + f" / {html.escape(crumb[-1][0])}"
         crumbs = f'<div class="crumbs"><a href="./">DataBP POC</a>{trail}</div>'
+    face = morgan_face("band-face") if title == "Ask Morgan" else ""
+    head = f'<h1>{html.escape(title)}</h1>'
+    if face:   # Morgan's portrait beside her name: the human side of the agent (Ray, 2026-11-20 13:02 ET)
+        head = f'<div class="band-title">{face}{head}</div>'
     return (f'<section class="page-band"><div class="in">{crumbs}'
-            f'<h1>{html.escape(title)}</h1><p class="lead">{html.escape(lead)}</p></div></section>')
+            f'{head}<p class="lead">{html.escape(lead)}</p></div></section>')
+
+
+def four_space(text):
+    """List continuations written with three spaces get four, as Markdown needs; inside a fenced block opened at
+    three spaces every line gains one space, so the code keeps its own indentation."""
+    out, fence = [], None
+    for line in text.split("\n"):
+        lead = len(line) - len(line.lstrip(" "))
+        if fence is None and line.lstrip().startswith("```") and lead == 3:
+            fence = 3
+            out.append(" " + line)
+            continue
+        if fence is not None:
+            out.append(" " + line if line.strip() else line)
+            if line.lstrip().startswith("```") and lead == 3:
+                fence = None
+            continue
+        out.append(re.sub(r"^ {3}(?! )", "    ", line))
+    return "\n".join(out)
 
 
 def render(item, strip_header=False):
     """A Pilot item's copy as HTML, masked, its own first heading left to the band."""
     import markdown
-    src = (ROOT / f"pilot/k111ki{item}.md").read_text()
+    src = (SOURCES / f"k111ki{item}.md").read_text()
     origin = src.splitlines()[0]
     body = src.split("\n", 1)[1]
     body = re.sub(r"^\s*# .*\n", "", body, count=1)
@@ -107,26 +142,25 @@ def render(item, strip_header=False):
         while parts and (not parts[0].strip() or parts[0].lstrip().startswith("|")):
             parts.pop(0)
         body = "\n\n".join(parts)
-    body = re.sub(r"(?m)^ {3}(?! )", "    ", mask(body))   # list continuations: four spaces, as Markdown needs
+    body = four_space(mask(body))
     m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version (\d+): (.*) -->", origin)
     return origin, m, markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
 
 
-def tutorial():
-    origin, m, content = render(463)
-    note = (f"Built from Pilot knowledge {m.group(1)} item {m.group(2)}, version {m.group(3)}, as it stands: the working "
-            "log kept while building, every step with its values and decisions. Private details such as addresses, "
-            "identifiers and paths are masked here; Pilot holds the whole.")
-    return page("The build tutorial", [("Build log", "build-log.html"), ("The build tutorial", "")],
-                "Every step as it happened, with its values: the source the build log is drawn from.", origin + content, note)
-
-
 def build_log():
     origin, m, content = render(820, strip_header=True)
+    content = content.replace("Next steps (knowledge 111 item 821)", '<a href="next-steps.html">Next steps</a>')
     return page("The build log", [("The build log", "")],
                 "How the reconciliation POC was built, step by step with its commands, and how it is proven.",
-                origin + content + '<p class="note">Every step with its values is in <a href="tutorial.html">the build tutorial</a>; '
+                origin + content + '<p class="note">Every step with its values is kept in Pilot, our knowledge base; '
                 'the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>')
+
+
+def next_steps():
+    origin, m, content = render(821, strip_header=True)
+    return page("Next steps", [("Next steps", "")],
+                "Where the POC goes from here, multi-tenant first; each step builds on what is already running.",
+                origin + content)
 
 
 def doc_slug(item):
@@ -210,7 +244,7 @@ def inline(s):
 
 
 def a_to_z():
-    src = (ROOT / "pilot/k111ki809.md").read_text()
+    src = (SOURCES / "k111ki809.md").read_text()
     origin = src.splitlines()[0]
     body = src.split("\n", 1)[1]
     parts = [p.strip() for p in body.split("\n\n") if p.strip()]
@@ -240,13 +274,16 @@ def a_to_z():
 
 
 def build():
-    result = {"tutorial.html": brand(tutorial()), "build-log.html": brand(build_log()),
-              "documents.html": brand(documents())}
+    result = {"build-log.html": brand(build_log()),
+              "documents.html": brand(documents()), "next-steps.html": brand(next_steps())}
     for d in DOCS:
         result[doc_slug(d[2])] = brand(doc(d[2]))
     for name in PAGES:
         text = (ROOT / name).read_text()
         text = brand(text)
+        if name == "index.html":   # Morgan's face where the home page sends people to her (Ray, 2026-11-20 13:06 ET, 2y)
+            text = between(text, "morgan-card", morgan_face("card-face", 56, "mgc"), anchor_after='<a class="brand-card" href="ask.html">')
+            text = between(text, "morgan-close", morgan_face("close-face", 96, "mgx"), anchor_after='<section class="band navy close">\n    <div class="in">')
         if name in PAGE_BANDS:
             crumb, title, lead = PAGE_BANDS[name]
             text = between(text, "page-band", band(crumb, title, lead), anchor_after="<!-- brand-header:end -->")

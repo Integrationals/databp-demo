@@ -6,10 +6,11 @@
 <title>The build log · DataBP POC</title>
 <style>
 body{margin:0}
-.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:anywhere}
+.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .doc h2{margin-top:36px} .doc h3{margin-top:26px}
 .doc table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px;display:block;overflow-x:auto}
-.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}
+.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:break-word;word-break:normal;min-width:9ch}
+.doc td code,.doc th code{overflow-wrap:anywhere}
 .doc code{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
 .doc pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto} .doc pre code{background:none;padding:0}
 .note{background:var(--brand-sky);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 24px}
@@ -48,6 +49,19 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
 .page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
 .page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}
+.page-band .band-title{display:flex;align-items:center;gap:18px;margin:0 0 10px}
+.page-band .band-title h1{margin:0}
+.page-band .band-face{flex:none;border-radius:50%;background:var(--brand-sky);box-shadow:0 0 0 3px var(--brand-yellow)}
+.morgan .mg-eyes,.face .mg-eyes{animation:mg-blink 4.2s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes mg-blink{0%,93%,100%{transform:scaleY(1)}96.5%{transform:scaleY(.08)}}
+.morgan .mg-grin,.face .mg-grin{opacity:0;transition:opacity .3s}
+.morgan.smile .mg-grin,.face.smile .mg-grin{opacity:1}
+.morgan.smile .mg-mouth,.face.smile .mg-mouth{opacity:0}
+.morgan.bob,.face.bob{animation:mg-bob 1.4s ease-in-out infinite}
+@keyframes mg-bob{50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.morgan .mg-eyes,.face .mg-eyes,.morgan.bob,.face.bob{animation:none}}
+.card-face{display:block;margin:0 0 10px;border-radius:50%;box-shadow:0 0 0 2px var(--brand-yellow)}
+.close-face{display:block;margin:0 auto 14px;border-radius:50%;box-shadow:0 0 0 3px var(--brand-yellow)}
 </style>
 <!-- brand-style:end -->
 </head>
@@ -56,15 +70,15 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <header class="brand-bar"><div class="in">
   <a class="brand-home" href="./">DataBP <span>POC</span></a>
   <nav class="brand-nav" aria-label="Sections">
-    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a>
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a><a href="next-steps.html">Next steps</a>
   </nav>
 </div></header>
-<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / The build log</div><h1>The build log</h1><p class="lead">How the reconciliation POC was built, step by step with its commands, and how it is proven.</p></div></section>
 <main class="doc">
 
-<!-- Pilot knowledge 111 item 820, version 10: The build log: how the DataBP reconciliation POC was built --><p>This POC answers one question for a data provider on DataBP: do my records about each subscriber agree, and what do the disagreements cost? It runs end to end on a production-shaped platform: three source systems in SQL Server, change data capture into Snowflake, dbt models and governed metrics, a Hex app and an analyst agent, Morgan, that answers in plain words. Every figure on the site comes from one place, the dbt Semantic Layer, and every figure is checked against an answer key computed independently of the platform.</p>
+<!-- Pilot knowledge 111 item 820, version 12: The build log: how the DataBP reconciliation POC was built --><p>This POC answers one question for a data provider on DataBP: do my records about each subscriber agree, and what do the disagreements cost? It runs end to end on a production-shaped platform: three source systems in SQL Server, change data capture into Snowflake, dbt models and governed metrics, a Hex app and an analyst agent, Morgan, that answers in plain words. Every figure on the site comes from one place, the dbt Semantic Layer, and every figure is checked against an answer key computed independently of the platform.</p>
 <table>
 <thead>
 <tr>
@@ -211,20 +225,50 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 </code></pre></div>
 </li>
 <li>
-<p><strong>The Openflow deployment, in Snowflake.</strong> One grant, run as ACCOUNTADMIN, lets SYSADMIN create and own deployments. Then, as SYSADMIN in Snowsight: Ingestion, Openflow, Deployments, Create, bring your own cloud, with our own VPC. Openflow generates a CloudFormation template for this deployment.</p>
+<p><strong>The Openflow deployment, in Snowflake.</strong> First, as ACCOUNTADMIN, the privilege that lets SYSADMIN create and own deployments, as Snowflake's setup guide for bring-your-own-cloud gives it for Openflow's current generation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">ACCOUNTADMIN</span><span class="p">;</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="n">OPENFLOW</span><span class="w"> </span><span class="n">DEPLOYMENT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ACCOUNT</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">SYSADMIN</span><span class="p">;</span>
+</code></pre></div>
+<p>Then, as SYSADMIN in Snowsight: Ingestion, Openflow, Deployments, Create, bring your own cloud, with our own VPC. Snowflake then writes the CloudFormation template for this deployment with nearly every value already filled in. An excerpt of ours, its values masked:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Parameters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">SnowflakeAccountURL</span><span class="p">:</span><span class="w">        </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">String</span><span class="p p-Indicator">,</span><span class="nt"> Default</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;filled in by Snowflake&gt;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">SnowflakeOAuthClientID</span><span class="p">:</span><span class="w">     </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">String</span><span class="p p-Indicator">,</span><span class="nt"> Default</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;filled in by Snowflake&gt;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">SnowflakeOAuthClientSecret</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">String</span><span class="p p-Indicator">,</span><span class="nt"> Default</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;filled in by Snowflake&gt;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">ControlPlaneURL</span><span class="p">:</span><span class="w">            </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">String</span><span class="p p-Indicator">,</span><span class="nt"> Default</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;filled in by Snowflake&gt;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">DataPlaneURL</span><span class="p">:</span><span class="w">               </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">String</span><span class="p p-Indicator">,</span><span class="nt"> Default</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;filled in by Snowflake&gt;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">DeploymentId</span><span class="p">:</span><span class="w">               </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">String</span><span class="p p-Indicator">,</span><span class="nt"> Default</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;filled in by Snowflake&gt;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="c1"># ... 20 more, each filled in by Snowflake or optional with a default</span>
+<span class="w">  </span><span class="nt">InfraVPC</span><span class="p">:</span><span class="w">             </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">EC2</span><span class="p p-Indicator">::</span><span class="nv">VPC</span><span class="p p-Indicator">::</span><span class="nv">Id</span><span class="w"> </span><span class="p p-Indicator">}</span><span class="w">             </span><span class="c1"># the cloud admin's choice</span>
+<span class="w">  </span><span class="nt">PrivateSubnet1</span><span class="p">:</span><span class="w">       </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">EC2</span><span class="p p-Indicator">::</span><span class="nv">Subnet</span><span class="p p-Indicator">::</span><span class="nv">Id</span><span class="w"> </span><span class="p p-Indicator">}</span><span class="w">          </span><span class="c1"># the cloud admin's choice</span>
+<span class="w">  </span><span class="nt">PrivateSubnet2</span><span class="p">:</span><span class="w">       </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">EC2</span><span class="p p-Indicator">::</span><span class="nv">Subnet</span><span class="p p-Indicator">::</span><span class="nv">Id</span><span class="w"> </span><span class="p p-Indicator">}</span><span class="w">          </span><span class="c1"># the cloud admin's choice</span>
+<span class="w">  </span><span class="nt">PrivateSecurityGroup</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">EC2</span><span class="p p-Indicator">::</span><span class="nv">SecurityGroup</span><span class="p p-Indicator">::</span><span class="nv">Id</span><span class="w"> </span><span class="p p-Indicator">}</span><span class="w">   </span><span class="c1"># the cloud admin's choice</span>
+<span class="nt">Resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">OpenflowAgentInstance</span><span class="p">:</span><span class="w">      </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">EC2</span><span class="p p-Indicator">::</span><span class="nv">Instance</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">OpenflowAgentRole</span><span class="p">:</span><span class="w">          </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">IAM</span><span class="p p-Indicator">::</span><span class="nv">Role</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">EC2InstanceProfile</span><span class="p">:</span><span class="w">         </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">IAM</span><span class="p p-Indicator">::</span><span class="nv">InstanceProfile</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">SnowflakeOAuthSecret</span><span class="p">:</span><span class="w">       </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">SecretsManager</span><span class="p p-Indicator">::</span><span class="nv">Secret</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">SnowflakeOAuthSecretPolicy</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">SecretsManager</span><span class="p p-Indicator">::</span><span class="nv">ResourcePolicy</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">TerraformStateBucket</span><span class="p">:</span><span class="w">       </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">S3</span><span class="p p-Indicator">::</span><span class="nv">Bucket</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">EC2InstanceConnectEndpoint</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> Type</span><span class="p">:</span><span class="w"> </span><span class="nv">AWS</span><span class="p p-Indicator">::</span><span class="nv">EC2</span><span class="p p-Indicator">::</span><span class="nv">InstanceConnectEndpoint</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</code></pre></div>
+<p>Of the template's 30 parameters, the cloud admin supplies four, all from the network built in step 1. Snowflake writes the rest, including the sign-in between the agent and Snowflake.</p>
 </li>
 <li>
-<p><strong>The stack, in AWS.</strong> The template goes to CloudFormation, with the VPC and the two private subnets as its parameters:</p>
+<p><strong>The stack, in AWS.</strong> The template goes to CloudFormation with those four values:</p>
 <div class="highlight"><pre><span></span><code>aws cloudformation create-stack --stack-name databp-openflow \
- --template-body file://databp-openflow.yaml --parameters file://parameters.json \
- --capabilities CAPABILITY_NAMED_IAM
+  --template-body file://databp-openflow.yaml \
+  --parameters ParameterKey=InfraVPC,ParameterValue=&lt;vpc&gt; \
+               ParameterKey=PrivateSubnet1,ParameterValue=&lt;private subnet a&gt; \
+               ParameterKey=PrivateSubnet2,ParameterValue=&lt;private subnet b&gt; \
+               ParameterKey=PrivateSecurityGroup,ParameterValue=&lt;security group&gt; \
+  --capabilities CAPABILITY_NAMED_IAM
 </code></pre></div>
-<p>The stack creates Openflow's agent, a small EC2 machine with its IAM role, a secret and an S3 bucket. The agent then builds a Kubernetes cluster (EKS) in the private subnets, with a management node and node groups that scale from zero for runtimes. The deployment turns ACTIVE in about an hour.</p>
+<p>The stack creates Openflow's agent, a small EC2 machine with its IAM role, its secret, and an S3 bucket the template names for Terraform state. The agent then builds a Kubernetes cluster (EKS) in the private subnets, with a management node and node groups that scale from zero for runtimes. The deployment turns ACTIVE in about an hour.</p>
 </li>
 <li>
 <p><strong>The runtime</strong>, the compute a connector runs on, from Openflow's form or in SQL:</p>
 <div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="n">OPENFLOW</span><span class="w"> </span><span class="n">RUNTIME</span><span class="w"> </span><span class="n">DATABP_LAB</span><span class="p">.</span><span class="n">OPENFLOW</span><span class="p">.</span><span class="n">DATABP_RUNTIME</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="n">DEPLOYMENT</span><span class="w"> </span><span class="ss">"DATABP_OPENFLOW"</span>
-<span class="w"> </span><span class="n">NODE_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SMALL</span><span class="w"> </span><span class="n">MIN_NODES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">MAX_NODES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">EXECUTE_AS_ROLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DATABP_LAB_EXEC_RL</span><span class="p">;</span>
+<span class="w">  </span><span class="n">NODE_TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SMALL</span><span class="w"> </span><span class="n">MIN_NODES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">MAX_NODES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">EXECUTE_AS_ROLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DATABP_LAB_EXEC_RL</span><span class="p">;</span>
 </code></pre></div>
 <p>On bring-your-own-cloud the runtime reaches SQL Server inside the VPC, so it needs no external access integration. A node starts in the runtime's node group within a minute.</p>
 </li>
@@ -370,8 +414,7 @@ python3 generator/reconcile_landing.py  # SQL Server against Snowflake
 <p>The build was done by Ray Serrano with AI agents doing the hands-on engineering under his decisions: Claude across the platform, Hex's agent on the app's layout. Every step, value and decision was written into a working log as it happened; this build log is drawn from it.</p>
 <p>Problems were handled the same way, by evidence. Production's first build failed because its dbt role could not read two schemas the development role could; the grant was fixed, and a check that Production can read every declared source now runs before every pull request. A Semantic Layer outage was narrowed by excluding each cause with one test, from the token to the warehouse, until it cleared on the provider's side. A published app found stale in a live read led to a fixed close for every Hex change: publish, then read live.</p>
 <h2>8. What comes next</h2>
-<p><strong>Multi-tenant.</strong> DataBP serves many data providers on one platform, and each must see only its own subscribers. The POC already carries the tenant in every key from silver up: the platform's tenant_id and Salesforce's tenant field qualify each subscriber's and product's business key, and the app shows one data provider. Serving all of them follows a design we have already worked out: the tenant key carried through the integration layer into every mart row; Snowflake row access policies that limit each data provider's role to its own rows; the Semantic Layer, the app and Morgan queried under that role, so the same governed metrics answer for each tenant alone; and a secure share per client where a data provider wants the data in its own Snowflake. It can be added to the POC if needed.</p>
-<p><strong>Real feeds.</strong> The same platform takes real feeds: one data provider's SQL Server, Salesforce and usage reports in place of the generator, with the answer key replaced by the provider's own reconciled months. Beyond that, the generator's second phase adds 200 subscribers for volume, and the checks extend to changes since the last close.</p><p class="note">Every step with its values is in <a href="tutorial.html">the build tutorial</a>; the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>
+<p>The steps from here, multi-tenant first, have their own page: <a href="next-steps.html">Next steps</a>.</p><p class="note">Every step with its values is kept in Pilot, our knowledge base; the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>
 </main>
 <!-- brand-footer:start -->
 <footer class="brand-foot"><div class="in">

@@ -6,10 +6,11 @@
 <title>Entitlement and billing reconciliation: design document · DataBP POC</title>
 <style>
 body{margin:0}
-.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:anywhere}
+.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .doc h2{margin-top:36px} .doc h3{margin-top:26px}
 .doc table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px;display:block;overflow-x:auto}
-.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}
+.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:break-word;word-break:normal;min-width:9ch}
+.doc td code,.doc th code{overflow-wrap:anywhere}
 .doc code{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
 .doc pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto} .doc pre code{background:none;padding:0}
 .note{background:var(--brand-sky);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 24px}
@@ -48,6 +49,19 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
 .page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
 .page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}
+.page-band .band-title{display:flex;align-items:center;gap:18px;margin:0 0 10px}
+.page-band .band-title h1{margin:0}
+.page-band .band-face{flex:none;border-radius:50%;background:var(--brand-sky);box-shadow:0 0 0 3px var(--brand-yellow)}
+.morgan .mg-eyes,.face .mg-eyes{animation:mg-blink 4.2s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes mg-blink{0%,93%,100%{transform:scaleY(1)}96.5%{transform:scaleY(.08)}}
+.morgan .mg-grin,.face .mg-grin{opacity:0;transition:opacity .3s}
+.morgan.smile .mg-grin,.face.smile .mg-grin{opacity:1}
+.morgan.smile .mg-mouth,.face.smile .mg-mouth{opacity:0}
+.morgan.bob,.face.bob{animation:mg-bob 1.4s ease-in-out infinite}
+@keyframes mg-bob{50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.morgan .mg-eyes,.face .mg-eyes,.morgan.bob,.face.bob{animation:none}}
+.card-face{display:block;margin:0 0 10px;border-radius:50%;box-shadow:0 0 0 2px var(--brand-yellow)}
+.close-face{display:block;margin:0 auto 14px;border-radius:50%;box-shadow:0 0 0 3px var(--brand-yellow)}
 </style>
 <!-- brand-style:end -->
 </head>
@@ -56,15 +70,15 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <header class="brand-bar"><div class="in">
   <a class="brand-home" href="./">DataBP <span>POC</span></a>
   <nav class="brand-nav" aria-label="Sections">
-    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a>
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a><a href="next-steps.html">Next steps</a>
   </nav>
 </div></header>
-<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / <a href="documents.html">Documents</a> / Design document</div><h1>Entitlement and billing reconciliation: design document</h1><p class="lead">The decisions, D-1 to D-24, each with its reason and evidence.</p></div></section>
 <main class="doc">
-<p class="note">The reconciliation (DIG-655). Built from Pilot knowledge 111 item 806, version 47, as kept while building; private details such as addresses, identifiers and paths are masked here.</p>
-<!-- Pilot knowledge 111 item 806, version 47: Entitlement and billing reconciliation: design document --><h3>Design Document</h3>
+<p class="note">The reconciliation (DIG-655). Built from Pilot knowledge 111 item 806, version 50, as kept while building; private details such as addresses, identifiers and paths are masked here.</p>
+<!-- Pilot knowledge 111 item 806, version 50: Entitlement and billing reconciliation: design document --><h3>Design Document</h3>
 <p><em>Branch Delivery Document</em> — <strong>Level 3 — Design Document</strong></p>
 <table>
 <thead>
@@ -84,7 +98,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 </tr>
 <tr>
 <td><strong>References</strong></td>
-<td>Profiling: not yet done, and the next step. In this product-led demo the three source systems do not exist yet, so profiling decides which source data must be created to drive the app: tables, columns, rows and planted cases, generated to this design's specification (Ray, 2026-11-19 10:02 ET; as the DigestCards design states for a system with no source). After it: expand this design, write the implementation guide, then build in the development environment — related records: the design sketch (knowledge 111 item 805); the interview preparation (knowledge 111 item 460); the lab design (knowledge 111 item 459); the demo build tutorial (knowledge 111 item 463); the DataBP project setup (knowledge 111 item 802); Linear DIG-650 and DIG-628</td>
+<td>Profiling: not yet done, and the next step. In this product-led demo the three source systems do not exist yet, so profiling decides which source data must be created to drive the app: tables, columns, rows and planted cases, generated to this design's specification (Ray, 2026-11-19 10:02 ET; as the DigestCards design states for a system with no source). After it: expand this design, write the implementation guide, then build in the development environment — related records: the design sketch (knowledge 111 item 805); the POC's notes on DataBP (knowledge 111 item 460); the lab design (knowledge 111 item 459); the demo build tutorial (knowledge 111 item 463); the DataBP project setup (knowledge 111 item 802); Linear DIG-650 and DIG-628</td>
 </tr>
 <tr>
 <td><strong>Status</strong></td>
@@ -112,7 +126,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <h2>0. Target ERD</h2>
 <p>Not drawn yet. It is drawn as SVG, in crow's-foot notation, from the source-to-target map in section 6.1 once that map is agreed, since the standard writes the map first and draws the diagram from it.</p>
 <h2>1. Purpose</h2>
-<p>This design decides the end product of the DataBP demo and works backwards from it to the data it needs: entitlement and billing reconciliation, a Hex app named for its question with the London Stock Exchange's term for the same check on the customer's side (course log, knowledge 111 item 798, entry 321), for one of DataBP's clients, a data provider, that answers whether the provider's records about each subscriber agree, and what changed since the last month-end close. The problem it serves is DataBP's own headline: "Less than half of contracted market data revenue is ever realized", drained by leakage, errors and audits that recover only a fraction of what they cost (databp.com, "The Problem" and "Resolve Revenue Leaks", read 2026-11-19; DataBP calls the figure an estimate and names no source). Ray, 2026-11-19: "the whole point here ... we must hone in on it." Each of the app's five checks is aimed at one of those causes (D-10, R-5). It is written for Ray, who decides, and for the session that builds it; its audience in the demo is Bin Luo, DataBP's CTO and the hiring manager.</p>
+<p>This design decides the end product of the DataBP demo and works backwards from it to the data it needs: entitlement and billing reconciliation, a Hex app named for its question with the London Stock Exchange's term for the same check on the customer's side (course log, knowledge 111 item 798, entry 321), for one of DataBP's clients, a data provider, that answers whether the provider's records about each subscriber agree, and what changed since the last month-end close. The problem it serves is DataBP's own headline: "Less than half of contracted market data revenue is ever realized", drained by leakage, errors and audits that recover only a fraction of what they cost (databp.com, "The Problem" and "Resolve Revenue Leaks", read 2026-11-19; DataBP calls the figure an estimate and names no source). Ray, 2026-11-19: "the whole point here ... we must hone in on it." Each of the app's five checks is aimed at one of those causes (D-10, R-5). It is written for Ray, who decides, and for the session that builds it; its audience in the demo is Bin Luo, DataBP's CTO.</p>
 <h2>2. Consumer questions</h2>
 <h3>2.1 Questions from consumers</h3>
 <table>
@@ -146,7 +160,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <td>Ray Serrano</td>
 <td>2026-11-18 17:56 ET</td>
 <td>DataBP session</td>
-<td>"determine the most effective way to present which kind of data analysis will be compelling to our audience, Bin, the CTO"</td>
+<td>"determine the most effective way to present which data analysis will be compelling to Bin, DataBP's CTO" (wording edited for the site: Ray, 2026-11-20, answer 2y)</td>
 <td>Present one subscriber whose records disagree, widen to the total, then change a source row live and show the figure move, and the same figure through Claude</td>
 <td>D-2, D-9</td>
 <td>P-2</td>

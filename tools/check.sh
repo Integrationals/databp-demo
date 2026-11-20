@@ -12,7 +12,7 @@ t "6 business page: DataBP at level 0 opens its own view, with its path and five
 t "7 business page names the app in the DataBP view and as the reconciliation view's heading" "[ -f $D/business.html ] && r business.html#databp | grep -q 'Entitlement and billing reconciliation for one data provider' && r business.html#reconciliation | grep -q '<h1 id=\"title\">Entitlement and billing reconciliation'"
 t "8 no page mentions the north star" "! grep -qiE 'north[- ]?star' $D/index.html $D/business.html $D/openflow.html"
 t "9 business page level 0 draws the loop with a line legend" "[ -f $D/business.html ] && r business.html | grep -q 'A step of the loop' && r business.html | grep -q '>submitted by the vendor to the exchange<'"
-t "10 openflow page leads back to the home page" "r openflow.html | grep -q '<a href=\"./\">DataBP demo</a>'"
+t "10 openflow page leads back to the home page" "r openflow.html | grep -q '<a class=\"brand-home\" href=\"./\">DataBP'"
 t "11 documents view: each of the four documents opens its sample" "python3 - \"$D\" <<'PY'
 import asyncio,sys
 from playwright.async_api import async_playwright
@@ -30,7 +30,7 @@ async def m(d):
 asyncio.run(m(sys.argv[1]))
 PY"
 t "12 business page: the A to Z summary shows on level 0 only, with five rows" "[ -f $D/business.html ] && [ \$(r business.html | grep -o '<tr class=\"az-r\">' | wc -l) -eq 5 ] && r business.html | grep -q '<section id=\"az\" class=\"az\">' && r business.html#databp | grep -q '<section id=\"az\" class=\"az\" hidden=\"\">'"
-t "13 every page wears the brand: DataBP's type, the demo bar, the not-a-DataBP-site footer, no DataBP logo" "( for f in index.html business.html openflow.html; do grep -q 'family=Poppins' $D/\$f && grep -q 'A demo for DataBP, by Integrationals' $D/\$f && grep -q 'This is not a DataBP site' $D/\$f && ! grep -qi "databp.com/wp-content" $D/\$f || exit 1; done )"
+t "13 every page wears the brand: DataBP's type, the POC bar, the not-a-DataBP-site footer, no DataBP logo" "( for f in index.html business.html openflow.html; do grep -q 'family=Poppins' $D/\$f && grep -q 'class=\"brand-bar\"' $D/\$f && grep -q 'Integrationals, as a POC for DataBP' $D/\$f && grep -q 'This is not a DataBP site' $D/\$f && ! grep -qi "databp.com/wp-content" $D/\$f || exit 1; done )"
 t "14 every generated part matches its source: the brand files and the Pilot item k111ki809" "[ -f $D/tools/build.py ] && (cd $D && python3 tools/build.py --check >/dev/null)"
-t "15 tutorial page: built from Pilot k111ki463, on the home page, with private details masked" "[ -f $D/tutorial.html ] && grep -q 'Built from Pilot knowledge 111 item 463' $D/tutorial.html && grep -q 'href=\"tutorial.html\"' $D/index.html && ! grep -qE '@integrationals\\.com|op://|rds\\.amazonaws\\.com|fiamfdn|\\b([0-9]{1,3}\\.){3}[0-9]{1,3}\\b' $D/tutorial.html"
+t "15 no Pilot copy and no tutorial page in the site: Pilot is read through the connector at build time" "[ ! -e $D/pilot ] && [ ! -e $D/tutorial.html ] && ! grep -lq 'tutorial.html' $D/*.html"
 t "16 reconciliation view: five checks, under-reporting among them, no box text overflowing" "r business.html#reconciliation | grep -q 'Entitled beyond reported' && [ \$(r business.html#reconciliation | grep -o '<g class=\"q\">' | wc -l) -eq 6 ] && python3 $(dirname "$0")/shot.py $D/business.html | grep -q 'overflow: \[\]'"

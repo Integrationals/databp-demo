@@ -6,10 +6,11 @@
 <title>Morgan, the POC&#x27;s agent: design document · DataBP POC</title>
 <style>
 body{margin:0}
-.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:anywhere}
+.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:break-word}
 .doc h2{margin-top:36px} .doc h3{margin-top:26px}
 .doc table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px;display:block;overflow-x:auto}
-.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}
+.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:break-word;word-break:normal;min-width:9ch}
+.doc td code,.doc th code{overflow-wrap:anywhere}
 .doc code{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
 .doc pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto} .doc pre code{background:none;padding:0}
 .note{background:var(--brand-sky);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 24px}
@@ -48,6 +49,19 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
 .page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
 .page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}
+.page-band .band-title{display:flex;align-items:center;gap:18px;margin:0 0 10px}
+.page-band .band-title h1{margin:0}
+.page-band .band-face{flex:none;border-radius:50%;background:var(--brand-sky);box-shadow:0 0 0 3px var(--brand-yellow)}
+.morgan .mg-eyes,.face .mg-eyes{animation:mg-blink 4.2s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes mg-blink{0%,93%,100%{transform:scaleY(1)}96.5%{transform:scaleY(.08)}}
+.morgan .mg-grin,.face .mg-grin{opacity:0;transition:opacity .3s}
+.morgan.smile .mg-grin,.face.smile .mg-grin{opacity:1}
+.morgan.smile .mg-mouth,.face.smile .mg-mouth{opacity:0}
+.morgan.bob,.face.bob{animation:mg-bob 1.4s ease-in-out infinite}
+@keyframes mg-bob{50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.morgan .mg-eyes,.face .mg-eyes,.morgan.bob,.face.bob{animation:none}}
+.card-face{display:block;margin:0 0 10px;border-radius:50%;box-shadow:0 0 0 2px var(--brand-yellow)}
+.close-face{display:block;margin:0 auto 14px;border-radius:50%;box-shadow:0 0 0 3px var(--brand-yellow)}
 </style>
 <!-- brand-style:end -->
 </head>
@@ -56,15 +70,15 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <header class="brand-bar"><div class="in">
   <a class="brand-home" href="./">DataBP <span>POC</span></a>
   <nav class="brand-nav" aria-label="Sections">
-    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a>
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a><a href="next-steps.html">Next steps</a>
   </nav>
 </div></header>
-<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / <a href="documents.html">Documents</a> / Design document</div><h1>Morgan, the POC&#x27;s agent: design document</h1><p class="lead">A pluggable agent service: core, persona and route.</p></div></section>
 <main class="doc">
-<p class="note">Morgan, the agent (DIG-656). Built from Pilot knowledge 111 item 817, version 10, as kept while building; private details such as addresses, identifiers and paths are masked here.</p>
-<!-- Pilot knowledge 111 item 817, version 10: Morgan, the POC's agent: design document --><h3>Design Document</h3>
+<p class="note">Morgan, the agent (DIG-656). Built from Pilot knowledge 111 item 817, version 12, as kept while building; private details such as addresses, identifiers and paths are masked here.</p>
+<!-- Pilot knowledge 111 item 817, version 12: Morgan, the POC's agent: design document --><h3>Design Document</h3>
 <p><em>Branch Delivery Document</em> — <strong>Level 3 — Design Document</strong></p>
 <table>
 <thead>
@@ -286,7 +300,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 </tr>
 <tr>
 <td>D-6</td>
-<td>Secrets live in AWS Parameter Store under the prefix /databp/morgan, written at deploy from vault items by Sage's ensure_secret: the Anthropic key, the Semantic Layer token and the access code. They come from the vault items "dv-digest Anthropic API key", "DataBP Semantic Layer Credential Token 2" and "DV Agent Code - Mary", the access code Mary uses for DV Digest (Ray, 2026-11-20 08:36 ET, answers 1b, 2a, 3a)</td>
+<td>Secrets live in AWS Parameter Store under the prefix /databp/morgan, written at deploy from vault items by Sage's ensure_secret: the Anthropic key, the Semantic Layer token and the access code. They come from the vault items "dv-digest Anthropic API key", "DataBP Semantic Layer Credential Token 2" and "Agent Code - Morgan" (Ray, 2026-11-20 08:36 ET, answers 1b, 2a, 3a; Morgan's own vault item named by Ray, 2026-11-20 13:50 ET)</td>
 <td>Nothing secret in code, files or the page</td>
 <td>Sage's web_functions.secret and deploy_functions.ensure_secret</td>
 </tr>
@@ -392,7 +406,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <tbody>
 <tr>
 <td>None</td>
-<td>DD-1 to DD-4 settled by Ray, 2026-11-20 08:36 ET: the Anthropic key DV Digest's (1b), the Semantic Layer token Token 2 (2a), the access code Mary's (3a), the build issue DIG-656 (5y)</td>
+<td>DD-1 to DD-4 settled by Ray, 2026-11-20 08:36 ET: the Anthropic key DV Digest's (1b), the Semantic Layer token Token 2 (2a), the access code its own vault item, Agent Code - Morgan (3a; named 2026-11-20 13:50 ET), the build issue DIG-656 (5y)</td>
 <td>None</td>
 <td>None</td>
 <td>None</td>
