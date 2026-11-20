@@ -137,7 +137,10 @@ def documents():
     groups = {}
     for issue, effort, item, kind, gist in DOCS:
         groups.setdefault((issue, effort), []).append((item, kind, gist))
-    out = ['<p class="lead-in">Every piece of work here ran the same way: an issue and a branch; a source profile where data '
+    out = ['<p class="note">These are the working files exactly as kept in Pilot, our knowledge base, which a client\'s team '
+           'receives with the work. Every code is an address in it: a standard, a decision, a profile result, and who '
+           'decided and when.</p>',
+           '<p class="lead-in">Every piece of work here ran the same way: an issue and a branch; a source profile where data '
            'is read; a design whose numbered decisions each carry their reason and evidence; a test plan written before the '
            'code; implementation guides for the steps; then a pull request whose tests are explained one by one, a review, '
            'and a live read after the merge. Claude, an AI agent, wrote these documents and did the engineering; Ray Serrano '
