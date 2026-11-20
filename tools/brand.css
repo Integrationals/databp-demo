@@ -1,12 +1,31 @@
-/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
-:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables), and its design moves (Pilot knowledge 111 item 811); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee;--brand-gray:#f4f6f8;--brand-shadow:0 6px 24px rgba(15,57,82,.08)}
 body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
 h1,h2,h3{color:var(--brand-ink);font-weight:600}
 a{color:var(--brand-blue)}
-.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
-.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+a:focus-visible,button:focus-visible{outline:3px solid var(--brand-yellow);outline-offset:2px}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px;position:sticky;top:0;z-index:10}
+.brand-bar .in{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .brand-bar a{color:#fff;text-decoration:none;font-weight:600}
-.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
-.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
-.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+.brand-home{font-size:17px;letter-spacing:.2px}
+.brand-home span{color:var(--brand-yellow)}
+.brand-nav{display:flex;gap:4px;flex-wrap:wrap}
+.brand-nav a{padding:6px 14px;border-radius:999px;font-weight:400;color:#d6deea}
+.brand-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.brand-nav a[aria-current="page"]{background:#fff;color:var(--brand-teal);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:0}
+.brand-foot .in{max-width:1100px;margin:0 auto;padding:22px 24px;line-height:1.6}
+.brand-foot p{margin:0}
+.brand-btn{display:inline-block;background:var(--brand-yellow);color:var(--brand-teal) !important;font-weight:600;text-decoration:none;border-radius:10px;padding:12px 22px}
+.brand-btn:hover{background:#ffcb3d}
+.brand-btn.ghost{background:transparent;color:#fff !important;border:1px solid rgba(255,255,255,.4)}
+.brand-btn.ghost:hover{border-color:#fff}
+.brand-label{color:var(--brand-yellow);text-transform:uppercase;font-size:13px;letter-spacing:1.5px;font-weight:600;margin:0 0 10px}
+.brand-card{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
 svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+@media (max-width:640px){.brand-nav a{padding:5px 10px;font-size:13px}}
+.page-band{background:var(--brand-navy);color:#d6deea;padding:44px 24px 40px;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px}
+.page-band .in{max-width:960px;margin:0 auto}
+.page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
+.page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
+.page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}

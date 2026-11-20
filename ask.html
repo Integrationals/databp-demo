@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ask Morgan · DataBP demo · Integrationals</title>
+  <title>Ask Morgan · DataBP POC · Integrationals</title>
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #3d4a57; background: #f7f8fa; }
     main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
-    h1 { margin: 0 0 8px; font-size: 26px; color: #0f3952; }
+    .crumbs { font-size: 13px; color: #6b7785; margin: 0 0 10px; } .crumbs a { color: #6b7785; }
+    h1 { margin: 0 0 8px; font-size: 30px; color: #0f3952; }
     p.lead { margin: 0 0 20px; line-height: 1.5; }
-    .chat { background: #fff; border: 1px solid #dbe4ee; border-radius: 14px; overflow: hidden; }
+    .chat { background: #fff; border: 1px solid #dbe4ee; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 24px rgba(15,57,82,.08); }
     .chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #071139; color: #fff; }
     .chat-head.off { opacity: .7; } .chat-head #status { font-size: 13px; color: #eaf6ff; margin-left: auto; }
     .code { padding: 10px 14px; border-bottom: 1px solid #dbe4ee; font-size: 14px; }
@@ -37,28 +38,54 @@
 <!-- brand-style:start -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 <style>
-/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
-:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables), and its design moves (Pilot knowledge 111 item 811); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee;--brand-gray:#f4f6f8;--brand-shadow:0 6px 24px rgba(15,57,82,.08)}
 body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
 h1,h2,h3{color:var(--brand-ink);font-weight:600}
 a{color:var(--brand-blue)}
-.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
-.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+a:focus-visible,button:focus-visible{outline:3px solid var(--brand-yellow);outline-offset:2px}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px;position:sticky;top:0;z-index:10}
+.brand-bar .in{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .brand-bar a{color:#fff;text-decoration:none;font-weight:600}
-.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
-.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
-.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+.brand-home{font-size:17px;letter-spacing:.2px}
+.brand-home span{color:var(--brand-yellow)}
+.brand-nav{display:flex;gap:4px;flex-wrap:wrap}
+.brand-nav a{padding:6px 14px;border-radius:999px;font-weight:400;color:#d6deea}
+.brand-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.brand-nav a[aria-current="page"]{background:#fff;color:var(--brand-teal);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:0}
+.brand-foot .in{max-width:1100px;margin:0 auto;padding:22px 24px;line-height:1.6}
+.brand-foot p{margin:0}
+.brand-btn{display:inline-block;background:var(--brand-yellow);color:var(--brand-teal) !important;font-weight:600;text-decoration:none;border-radius:10px;padding:12px 22px}
+.brand-btn:hover{background:#ffcb3d}
+.brand-btn.ghost{background:transparent;color:#fff !important;border:1px solid rgba(255,255,255,.4)}
+.brand-btn.ghost:hover{border-color:#fff}
+.brand-label{color:var(--brand-yellow);text-transform:uppercase;font-size:13px;letter-spacing:1.5px;font-weight:600;margin:0 0 10px}
+.brand-card{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
 svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+@media (max-width:640px){.brand-nav a{padding:5px 10px;font-size:13px}}
+.page-band{background:var(--brand-navy);color:#d6deea;padding:44px 24px 40px;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px}
+.page-band .in{max-width:960px;margin:0 auto}
+.page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
+.page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
+.page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}
 </style>
 <!-- brand-style:end -->
 </head>
 <body>
 <!-- brand-header:start -->
-<div class="brand-bar"><div class="in"><a href="./">DataBP demo</a><span class="brand-tag">A demo for DataBP, by Integrationals</span></div></div>
+<header class="brand-bar"><div class="in">
+  <a class="brand-home" href="./">DataBP <span>POC</span></a>
+  <nav class="brand-nav" aria-label="Sections">
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a>
+  </nav>
+</div></header>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
+<!-- page-band:start -->
+<section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / Ask Morgan</div><h1>Ask Morgan</h1><p class="lead">Morgan answers questions about the reconciliation in your own words. Every number comes from a query she runs against the dbt Semantic Layer, the same metrics the app reads, and the query is shown under the answer.</p></div></section>
+<!-- page-band:end -->
   <main>
-    <h1>Ask Morgan</h1>
-    <p class="lead">Morgan answers questions about the entitlement and billing reconciliation in your own words. Every number she gives comes from a query she runs against the dbt Semantic Layer, the same metrics the dashboard reads, and the query is shown under the answer. All data is synthetic.</p>
     <div class="chat" id="chat" data-url="https://sb7cvpnb27unuey2nb2xnngbn40nzqwb.lambda-url.us-east-1.on.aws/" data-env="production">
       <div class="chat-head off" id="chat-head"><svg class="face" viewBox="208 33 124 124" width="34" height="34" aria-hidden="true"><circle cx="270" cy="95" r="62" fill="#eaf6ff"/><circle cx="270" cy="60" r="11" fill="#4a3426"/><ellipse cx="270" cy="92" rx="27" ry="30" fill="#4a3426"/><path d="M226 150 C 232 124, 308 124, 314 150 Q270 162 226 150 Z" fill="#071139"/><rect x="262" y="112" width="16" height="14" fill="#e2b48f"/><polygon points="258,126 282,126 270,142" fill="#ffffff"/><path d="M256 126 Q270 136 284 126 L280 134 Q270 140 260 134 Z" fill="#ffbe0c"/><ellipse cx="270" cy="95" rx="21" ry="25" fill="#e2b48f"/><path d="M249 90 C 252 70, 290 68, 292 92 C 282 80, 262 78, 249 90 Z" fill="#4a3426"/><circle cx="249" cy="104" r="2.5" fill="#ffbe0c"/><circle cx="291" cy="104" r="2.5" fill="#ffbe0c"/><circle cx="262" cy="97" r="2" fill="#071139"/><circle cx="278" cy="97" r="2" fill="#071139"/><path d="M262 108 Q270 116 278 108" fill="none" stroke="#071139" stroke-width="2" stroke-linecap="round"/></svg><b>Morgan</b><span id="status"></span></div>
       <div class="code"><label for="code"><b>Access code</b></label><input id="code" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" placeholder="the code Ray sent you"><small>The access code Ray sent you. This page remembers it until you close the tab.</small></div>
@@ -150,7 +177,9 @@ document.getElementById('sugg-toggle').addEventListener('click',function(){docum
 </script>
   </main>
 <!-- brand-footer:start -->
-<div class="brand-foot"><div class="in">Built by Ray Serrano, Integrationals, as a demo for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. Demo data is synthetic.</div></div>
+<footer class="brand-foot"><div class="in">
+  <p>Built by Ray Serrano, Integrationals, as a POC for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. The data is synthetic, generated to cover every case the reconciliation checks.</p>
+</div></footer>
 <!-- brand-footer:end -->
 </body>
 </html>
