@@ -10,7 +10,7 @@ Run from the repository root:
     python3 tools/build.py          rebuild the pages
     python3 tools/build.py --check  exit 1 if any page differs from a rebuild
 """
-import html, os, re, sys, pathlib
+import html, json, os, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # The Pilot items the pages are built from are read through the Pilot connector into this folder, outside the
@@ -143,8 +143,38 @@ def render(item, strip_header=False):
             parts.pop(0)
         body = "\n\n".join(parts)
     body = four_space(mask(body))
+    diagrams = []
+
+    def hold(mt):
+        diagrams.append(json.loads(mt.group(1)))
+        return f"\nDIGEST-DIAGRAM-{len(diagrams) - 1}\n"
+    body = re.sub(r"^```digest-diagram\n(.*?)\n```$", hold, body, flags=re.S | re.M)
     m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version (\d+): (.*) -->", origin)
-    return origin, m, markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
+    out = markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
+    for i, views in enumerate(diagrams):
+        out = out.replace(f"<p>DIGEST-DIAGRAM-{i}</p>", digest_diagram(views))
+    return origin, m, out
+
+
+DIAGRAM_CSS = (ROOT / "tools/digest_diagram.css")
+DIAGRAM_JS = (ROOT / "tools/digest_diagram.js")
+
+
+def digest_diagram(views):
+    """A Digest Diagram (Standard: Digest Diagrams, knowledge 1 item 808) from its views, kept in Pilot:
+    level 0 first, each box with a view behind it opening that view, Up one and Start, each view at #its-id."""
+    root = next(k for k, v in views.items() if v["parent"] is None)
+    data = json.dumps(views, ensure_ascii=False).replace("</", "<\\/")
+    return ('<section class="dd" id="dd-' + root + '" data-root="' + root + '">'
+            '<style>' + DIAGRAM_CSS.read_text().strip() + '</style>'
+            '<p class="dd-crumbs"></p><h3 class="dd-title"></h3><p class="dd-lead"></p>'
+            '<div class="dd-bar"><button type="button" class="dd-up">Up one</button>'
+            '<button type="button" class="dd-home">Start</button></div>'
+            '<div class="dd-diagram"></div>'
+            '<table class="dd-facts"><thead><tr></tr></thead><tbody></tbody></table>'
+            '<p class="dd-note"></p>'
+            '<script type="application/json" class="dd-data">' + data + '</script>'
+            '<script>' + DIAGRAM_JS.read_text().strip() + '</script></section>')
 
 
 def build_log():
