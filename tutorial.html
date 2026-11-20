@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The build tutorial · DataBP demo</title>
+<title>The build tutorial · DataBP POC</title>
 <style>
 body{margin:0}
 main{max-width:960px;margin:0 auto;padding:20px 24px 40px;line-height:1.65;font-size:16px}
@@ -16,27 +16,47 @@ pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padd
 <!-- brand-style:start -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 <style>
-/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
-:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables), and its design moves (Pilot knowledge 111 item 811); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee;--brand-gray:#f4f6f8;--brand-shadow:0 6px 24px rgba(15,57,82,.08)}
 body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
 h1,h2,h3{color:var(--brand-ink);font-weight:600}
 a{color:var(--brand-blue)}
-.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
-.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+a:focus-visible,button:focus-visible{outline:3px solid var(--brand-yellow);outline-offset:2px}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px;position:sticky;top:0;z-index:10}
+.brand-bar .in{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .brand-bar a{color:#fff;text-decoration:none;font-weight:600}
-.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
-.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
-.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+.brand-home{font-size:17px;letter-spacing:.2px}
+.brand-home span{color:var(--brand-yellow)}
+.brand-nav{display:flex;gap:4px;flex-wrap:wrap}
+.brand-nav a{padding:6px 14px;border-radius:999px;font-weight:400;color:#d6deea}
+.brand-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.brand-nav a[aria-current="page"]{background:#fff;color:var(--brand-teal);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:0}
+.brand-foot .in{max-width:1100px;margin:0 auto;padding:22px 24px;line-height:1.6}
+.brand-foot p{margin:0}
+.brand-btn{display:inline-block;background:var(--brand-yellow);color:var(--brand-teal) !important;font-weight:600;text-decoration:none;border-radius:10px;padding:12px 22px}
+.brand-btn:hover{background:#ffcb3d}
+.brand-btn.ghost{background:transparent;color:#fff !important;border:1px solid rgba(255,255,255,.4)}
+.brand-btn.ghost:hover{border-color:#fff}
+.brand-label{color:var(--brand-yellow);text-transform:uppercase;font-size:13px;letter-spacing:1.5px;font-weight:600;margin:0 0 10px}
+.brand-card{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
 svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+@media (max-width:640px){.brand-nav a{padding:5px 10px;font-size:13px}}
 </style>
 <!-- brand-style:end -->
 </head>
 <body>
 <!-- brand-header:start -->
-<div class="brand-bar"><div class="in"><a href="./">DataBP demo</a><span class="brand-tag">A demo for DataBP, by Integrationals</span></div></div>
+<header class="brand-bar"><div class="in">
+  <a class="brand-home" href="./">DataBP <span>POC</span></a>
+  <nav class="brand-nav" aria-label="Sections">
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a>
+  </nav>
+</div></header>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <main>
-<div class="crumbs"><a href="./">DataBP demo</a> / The build tutorial</div>
+<div class="crumbs"><a href="./">DataBP POC</a> / The build tutorial</div>
 <!-- Pilot knowledge 111 item 463, version 100: DataBP demo build tutorial -->
 <p class="draft">Built from Pilot knowledge 111 item 463, version 100, as it stands: a working draft, published to be reviewed and improved, Pilot first. Private details such as addresses, identifiers and paths are masked here; Pilot holds the whole.</p>
 <h1>Openflow hands-on tutorial: SQL Server into Snowflake, with its terms</h1>
@@ -534,7 +554,9 @@ SHOW GRANTS TO ROLE DATABP_SL_RL;
 <p>As the lab design's section 0.3 lists: delete the deployment in Openflow, then the stack; then, once the DataBP work is done, the SQL Server and the function <code>digestcards-agent</code> with its security group. Also drop the role <code>DATABP_LAB_READ_RL</code> (granted 2026-11-18 for DBeaver), the user <code>DATABP_DBT_SVC</code> and role <code>DATABP_DBT_RL</code> with the schemas dbt created, and delete the key files <code>databp_dbt_key.p8</code> and <code>.pub</code> on Serraneo.</p>
 </main>
 <!-- brand-footer:start -->
-<div class="brand-foot"><div class="in">Built by Ray Serrano, Integrationals, as a demo for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. Demo data is synthetic.</div></div>
+<footer class="brand-foot"><div class="in">
+  <p>Built by Ray Serrano, Integrationals, as a POC for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. The data is synthetic, generated to cover every case the reconciliation checks.</p>
+</div></footer>
 <!-- brand-footer:end -->
 </body>
 </html>

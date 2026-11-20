@@ -15,27 +15,47 @@ table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px} th,
 <!-- brand-style:start -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 <style>
-/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables); no DataBP logo or wordmark. */
-:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee}
+/* DataBP's colors and type, read 2026-11-19 from databp.com's own stylesheet (its :root variables), and its design moves (Pilot knowledge 111 item 811); no DataBP logo or wordmark. */
+:root{--brand-navy:#071139;--brand-ink:#0f3952;--brand-teal:#033953;--brand-blue:#486a99;--brand-sky:#eaf6ff;--brand-yellow:#ffbe0c;--brand-text:#3d4a57;--brand-muted:#6b7785;--brand-line:#dbe4ee;--brand-gray:#f4f6f8;--brand-shadow:0 6px 24px rgba(15,57,82,.08)}
 body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;color:var(--brand-text);background:#fff !important}
 h1,h2,h3{color:var(--brand-ink);font-weight:600}
 a{color:var(--brand-blue)}
-.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px}
-.brand-bar .in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+a:focus-visible,button:focus-visible{outline:3px solid var(--brand-yellow);outline-offset:2px}
+.brand-bar{background:var(--brand-navy);color:#fff;font-size:14px;position:sticky;top:0;z-index:10}
+.brand-bar .in{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .brand-bar a{color:#fff;text-decoration:none;font-weight:600}
-.brand-bar .brand-tag{color:var(--brand-yellow);font-weight:600}
-.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:40px}
-.brand-foot .in{max-width:960px;margin:0 auto;padding:18px 24px;line-height:1.6}
+.brand-home{font-size:17px;letter-spacing:.2px}
+.brand-home span{color:var(--brand-yellow)}
+.brand-nav{display:flex;gap:4px;flex-wrap:wrap}
+.brand-nav a{padding:6px 14px;border-radius:999px;font-weight:400;color:#d6deea}
+.brand-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.brand-nav a[aria-current="page"]{background:#fff;color:var(--brand-teal);font-weight:600}
+.brand-foot{background:var(--brand-navy);color:#b7c3d6;font-size:13px;margin-top:0}
+.brand-foot .in{max-width:1100px;margin:0 auto;padding:22px 24px;line-height:1.6}
+.brand-foot p{margin:0}
+.brand-btn{display:inline-block;background:var(--brand-yellow);color:var(--brand-teal) !important;font-weight:600;text-decoration:none;border-radius:10px;padding:12px 22px}
+.brand-btn:hover{background:#ffcb3d}
+.brand-btn.ghost{background:transparent;color:#fff !important;border:1px solid rgba(255,255,255,.4)}
+.brand-btn.ghost:hover{border-color:#fff}
+.brand-label{color:var(--brand-yellow);text-transform:uppercase;font-size:13px;letter-spacing:1.5px;font-weight:600;margin:0 0 10px}
+.brand-card{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
 svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+@media (max-width:640px){.brand-nav a{padding:5px 10px;font-size:13px}}
 </style>
 <!-- brand-style:end -->
 </head>
 <body>
 <!-- brand-header:start -->
-<div class="brand-bar"><div class="in"><a href="./">DataBP demo</a><span class="brand-tag">A demo for DataBP, by Integrationals</span></div></div>
+<header class="brand-bar"><div class="in">
+  <a class="brand-home" href="./">DataBP <span>POC</span></a>
+  <nav class="brand-nav" aria-label="Sections">
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a>
+  </nav>
+</div></header>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <main>
-<div class="crumbs"><a href="./">DataBP demo</a> / The build log</div>
+<div class="crumbs"><a href="./">DataBP POC</a> / The build log</div>
 <!-- Pilot knowledge 111 item 820, version 7: The build log: how the DataBP reconciliation POC was built -->
 <h1>The build log: how the DataBP reconciliation POC was built</h1>
 <p>This POC answers one question for a data provider on DataBP: do my records about each subscriber agree, and what do the disagreements cost? It runs end to end on a production-shaped platform: three source systems in SQL Server, change data capture into Snowflake, dbt models and governed metrics, a Hex app and an analyst agent, Morgan, that answers in plain words. Every figure on the site comes from one place, the dbt Semantic Layer, and every figure is checked against an answer key computed independently of the platform.</p>
@@ -346,7 +366,9 @@ python3 generator/reconcile_landing.py  # SQL Server against Snowflake
 <p>The same platform takes real feeds: one data provider's SQL Server, Salesforce and usage reports in place of the generator, with the answer key replaced by the provider's own reconciled months. Beyond that, the generator's second phase adds 200 subscribers for volume, and the checks extend to changes since the last close.</p>
 </main>
 <!-- brand-footer:start -->
-<div class="brand-foot"><div class="in">Built by Ray Serrano, Integrationals, as a demo for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. Demo data is synthetic.</div></div>
+<footer class="brand-foot"><div class="in">
+  <p>Built by Ray Serrano, Integrationals, as a POC for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. The data is synthetic, generated to cover every case the reconciliation checks.</p>
+</div></footer>
 <!-- brand-footer:end -->
 </body>
 </html>

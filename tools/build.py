@@ -56,7 +56,7 @@ def tutorial():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The build tutorial · DataBP demo</title>
+<title>The build tutorial · DataBP POC</title>
 <style>
 body{{margin:0}}
 main{{max-width:960px;margin:0 auto;padding:20px 24px 40px;line-height:1.65;font-size:16px}}
@@ -69,7 +69,7 @@ pre{{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;pad
 </head>
 <body>
 <main>
-<div class="crumbs"><a href="./">DataBP demo</a> / The build tutorial</div>
+<div class="crumbs"><a href="./">DataBP POC</a> / The build tutorial</div>
 {origin}
 <p class="draft">{html.escape(note)}</p>
 {content}
@@ -108,7 +108,7 @@ table{{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px}} t
 </head>
 <body>
 <main>
-<div class="crumbs"><a href="./">DataBP demo</a> / The build log</div>
+<div class="crumbs"><a href="./">DataBP POC</a> / The build log</div>
 {origin}
 {content}
 </main>
