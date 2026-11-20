@@ -13,7 +13,7 @@ import html, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
-GENERATED = ["tutorial.html", "build-log.html", "documents.html"]  # and one page per DOCS item
+GENERATED = ["tutorial.html", "build-log.html", "documents.html", "next-steps.html"]  # and one page per DOCS item
 
 # Private details masked when the tutorial is built for the public site;
 # Pilot keeps the item whole (Ray, 2026-11-19, answer 1a). Order matters.
@@ -153,10 +153,18 @@ def tutorial():
 
 def build_log():
     origin, m, content = render(820, strip_header=True)
+    content = content.replace("Next steps (knowledge 111 item 821)", '<a href="next-steps.html">Next steps</a>')
     return page("The build log", [("The build log", "")],
                 "How the reconciliation POC was built, step by step with its commands, and how it is proven.",
                 origin + content + '<p class="note">Every step with its values is in <a href="tutorial.html">the build tutorial</a>; '
                 'the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>')
+
+
+def next_steps():
+    origin, m, content = render(821, strip_header=True)
+    return page("Next steps", [("Next steps", "")],
+                "Where the POC goes from here, multi-tenant first; each step builds on what is already running.",
+                origin + content)
 
 
 def doc_slug(item):
@@ -271,7 +279,7 @@ def a_to_z():
 
 def build():
     result = {"tutorial.html": brand(tutorial()), "build-log.html": brand(build_log()),
-              "documents.html": brand(documents())}
+              "documents.html": brand(documents()), "next-steps.html": brand(next_steps())}
     for d in DOCS:
         result[doc_slug(d[2])] = brand(doc(d[2]))
     for name in PAGES:
