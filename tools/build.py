@@ -274,7 +274,8 @@ PAGE_BANDS = {   # the title band each hand-written page opens with
                       "Openflow in our own AWS network, level by level, from the VPC to the connector."),
     "ask.html": ([("Ask Morgan", "")], "Ask Morgan",
                  "Morgan answers questions about the reconciliation in your own words. Every number comes from a query she "
-                 "runs against the dbt Semantic Layer, the same metrics the app reads, and the query is shown under the answer."),
+                 "runs against the dbt Semantic Layer, the same metrics the app reads, and the query is shown under the answer. "
+                 "Start with one of her four questions, or ask your own."),
 }
 
 FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">'
