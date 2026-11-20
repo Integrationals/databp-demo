@@ -89,7 +89,8 @@ def build_log():
     parts = rest.split("\n\n")
     while parts and (not parts[0].strip() or parts[0].lstrip().startswith("|")):
         parts.pop(0)
-    content = markdown.markdown(title + "\n\n" + "\n\n".join(parts), extensions=["tables"])
+    text = re.sub(r"(?m)^ {3}(?! )", "    ", "\n\n".join(parts))   # list continuations: four spaces, as Markdown needs
+    content = markdown.markdown(title + "\n\n" + text, extensions=["tables", "pymdownx.superfences"])
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,6 +101,8 @@ def build_log():
 body{{margin:0}}
 main{{max-width:960px;margin:0 auto;padding:20px 24px 40px;line-height:1.65;font-size:16px}}
 .crumbs{{font-size:13px;color:var(--brand-muted)}} .crumbs a{{color:var(--brand-muted)}}
+code{{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}}
+pre{{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto}} pre code{{background:none;padding:0}}
 table{{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px}} th,td{{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}}
 </style>
 </head>
