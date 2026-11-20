@@ -51,3 +51,4 @@ async def m(d):
         await b.close()
 asyncio.run(m(sys.argv[1]))
 PY"
+t "18 design moves on every page but the branch documents; the menu in title case, without The app" "( for f in business.html openflow.html ask.html build-log.html documents.html next-steps.html; do grep -q 'class=\"endband\"' $D/\$f && grep -q 'class=\"sect' $D/\$f || exit 1; done; for f in $D/doc-8*.html; do ! grep -q 'class=\"endband\"' \$f || exit 1; done; ! grep -q '>The app</a>' $D/index.html && grep -q '>Build Log</a><a href=\"documents.html\">Documents</a><a href=\"next-steps.html\">Next Steps</a>' $D/index.html )"

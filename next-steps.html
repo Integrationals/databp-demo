@@ -62,6 +62,30 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 @media (prefers-reduced-motion:reduce){.morgan .mg-eyes,.face .mg-eyes,.morgan.bob,.face.bob{animation:none}}
 .card-face{display:block;margin:0 0 10px;border-radius:50%;box-shadow:0 0 0 2px var(--brand-yellow)}
 .close-face{display:block;margin:0 auto 14px;border-radius:50%;box-shadow:0 0 0 3px var(--brand-yellow)}
+/* Interior pages wear the home page's design moves (Ray, 2026-11-20 14:45 ET): alternating full-width bands, pill tabs, cards, yellow buttons, a label over the closing navy band. The branch documents keep their working-file look. */
+.sect{padding:48px 24px}.sect .in{max-width:960px;margin:0 auto}
+.sect.sky{background:var(--brand-sky)}
+.sect.dots,.sect.hand{background-color:var(--brand-gray);background-image:radial-gradient(rgba(15,57,82,.12) 1px,transparent 1px);background-size:18px 18px}
+.sect h2{font-size:clamp(22px,2.6vw,28px);margin:0 0 12px}
+.sect table{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
+.sect.pillrow{padding:18px 24px;background:#fff;border-bottom:1px solid var(--brand-line)}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.pills a{display:inline-block;border-radius:999px;padding:6px 14px;background:#fff;border:1px solid var(--brand-line);color:var(--brand-ink);text-decoration:none;font-size:14px}
+.pills a:hover,.pills a:focus-visible{background:var(--brand-teal);border-color:var(--brand-teal);color:#fff}
+.doc.dressed{max-width:none;padding:0}
+.sect.hand{padding:16px 0 32px}
+.hand .diagram,.hand table,.hand .az{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
+.hand table{display:table}
+.hand .bar button,.dd button{border-radius:999px;padding:6px 16px}
+.hand .bar button:hover:not(:disabled),.dd button:hover:not(:disabled){background:var(--brand-teal);border-color:var(--brand-teal);color:#fff}
+.endband{background:var(--brand-navy);color:#d6deea;text-align:center;padding:56px 24px;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px}
+.endband .in{max-width:720px;margin:0 auto}
+.endband h2{color:#fff;font-size:clamp(22px,2.6vw,30px);margin:0 0 8px}
+.endband p{margin:0 auto 22px;line-height:1.7}
+.endband .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+@media (max-width:520px){.sect{padding:36px 18px}}
+.sect table{display:table;width:100%}
+@media (max-width:700px){.sect table{display:block}}
 </style>
 <!-- brand-style:end -->
 </head>
@@ -70,16 +94,15 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <header class="brand-bar"><div class="in">
   <a class="brand-home" href="./">DataBP <span>POC</span></a>
   <nav class="brand-nav" aria-label="Sections">
-    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a><a href="next-steps.html">Next steps</a>
+    <a href="business.html">The Business</a><a href="openflow.html">The Platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build Log</a><a href="documents.html">Documents</a><a href="next-steps.html">Next Steps</a>
   </nav>
 </div></header>
 <script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / Next steps</div><h1>Next steps</h1><p class="lead">Where the POC goes from here, multi-tenant first; each step builds on what is already running.</p></div></section>
-<main class="doc">
-
-<!-- Pilot knowledge 111 item 821, version 4: Next steps: where the POC goes from here --><p>The POC answers the reconciliation question for one data provider on synthetic data. These are the steps from here to DataBP's platform, in the order we would take them. Each one builds on what is already running; none needs the POC rebuilt.</p>
-<h2>1. Multi-tenant</h2>
+<main class="doc dressed">
+<nav class="sect pillrow" aria-label="On this page"><div class="in"><ul class="pills"><li><a href="#1-multi-tenant">1. Multi-tenant</a></li><li><a href="#2-real-feeds">2. Real feeds</a></li><li><a href="#3-your-bi-tool">3. Your BI tool</a></li><li><a href="#4-since-the-last-close">4. Since the last close</a></li><li><a href="#5-volume">5. Volume</a></li></ul></div></nav><section class="sect"><div class="in"><!-- Pilot knowledge 111 item 821, version 4: Next steps: where the POC goes from here --><p>The POC answers the reconciliation question for one data provider on synthetic data. These are the steps from here to DataBP's platform, in the order we would take them. Each one builds on what is already running; none needs the POC rebuilt.</p>
+</div></section><section class="sect sky"><div class="in"><h2 id="1-multi-tenant">1. Multi-tenant</h2>
 <p>DataBP serves many data providers on one platform, and each signed-in user must get only the metrics that user may run, over only the rows of the clients that user may see. The POC already carries the tenant in every key from silver up: the platform's tenant_id and Salesforce's tenant field qualify each subscriber's and product's business key, and the app shows one data provider. Serving all of them follows a design we have worked out, Multi-tenant access: the design (knowledge 111 item 822). The app connects to Snowflake as one service user and stamps each session with the signed-in user, in a session attribute that cannot change. Two maps then decide what the user gets: a metric map, which the app checks before every Semantic Layer query, so Morgan never needs to know it exists; and a row map, which Snowflake's row access policy reads with the stamp, on every query. When nothing is allowed, nothing comes back. If requirements call for label-based security, the same policy can compare a label on each row with the user's clearance. Where a data provider wants the data in its own Snowflake, a secure share per client carries it. It can be added to the POC if needed; the diagram below opens each part.</p>
 <section class="dd" id="dd-mt" data-root="mt"><style>.dd{--p-fill:#EEEDFE;--p-line:#534AB7;--p-ink:#3C3489;--p-sub:#534AB7;--d-fill:#E1F5EE;--d-line:#0F6E56;--d-ink:#085041;--d-sub:#0F6E56;--b-fill:#FBEAF0;--b-line:#993556;--b-ink:#72243E;--b-sub:#993556;--q-fill:#FAECE7;--q-line:#993C1D;--q-ink:#712B13;--q-sub:#993C1D;--dd-muted:#6b6963;--dd-line:#c9c6bd;--dd-card:#ffffff;margin:18px 0 8px;scroll-margin-top:80px}
 .dd .dd-crumbs{font-size:13px;color:var(--dd-muted);margin:0 0 2px}
@@ -120,15 +143,16 @@ q(".dd-up").addEventListener("click",()=>{const p=V[cur()].parent;if(p)go(p)});
 q(".dd-home").addEventListener("click",()=>go(R));
 window.addEventListener("popstate",render);window.addEventListener("hashchange",render);
 render();if(V[location.hash.replace("#","")])S.scrollIntoView();})();</script></section>
-<h2>2. Real feeds</h2>
+</div></section><section class="sect "><div class="in"><h2 id="2-real-feeds">2. Real feeds</h2>
 <p>The same platform takes real feeds: one data provider's SQL Server, Salesforce and usage reports in place of the generator. The answer key then comes from the provider's own reconciled months, and the same tests hold the platform to it. Openflow's connector takes the new tables by name; dbt's staging views map their columns.</p>
-<h2>3. Your BI tool</h2>
+</div></section><section class="sect dots"><div class="in"><h2 id="3-your-bi-tool">3. Your BI tool</h2>
 <p>The app runs in Hex for convenience. In Tableau, the dashboard connects to the same Semantic Layer through dbt's connector, so the 17 metrics, their definitions and Morgan's answers stay exactly as they are; only the dashboard is rebuilt.</p>
-<h2>4. Since the last close</h2>
+</div></section><section class="sect sky"><div class="in"><h2 id="4-since-the-last-close">4. Since the last close</h2>
 <p>The checks extend from each month's state to what changed since the last month-end close: usage reports restated after the close, rows deleted at the source, licenses added late. The connector already carries every change and deletion, so the history is there to read.</p>
-<h2>5. Volume</h2>
-<p>The generator's second phase adds 200 subscribers, so the platform is measured at a volume closer to a data provider's, with the same answer key method behind every figure.</p>
+</div></section><section class="sect "><div class="in"><h2 id="5-volume">5. Volume</h2>
+<p>The generator's second phase adds 200 subscribers, so the platform is measured at a volume closer to a data provider's, with the same answer key method behind every figure.</p></div></section>
 </main>
+<section class="endband"><div class="in"><p class="brand-label">Entitlement and billing reconciliation</p><h2>See it running</h2><p>The live app and Morgan answer from the same governed metrics, on the platform this site describes.</p><div class="ctas"><a class="brand-btn" href="./#app">Try the live app</a><a class="brand-btn ghost" href="ask.html">Ask Morgan</a></div></div></section>
 <!-- brand-footer:start -->
 <footer class="brand-foot"><div class="in">
   <p>Built by Ray Serrano, Integrationals, as a POC for DataBP. This is not a DataBP site: it wears DataBP's colors and type and no DataBP logo. The data is synthetic, generated to cover every case the reconciliation checks.</p>

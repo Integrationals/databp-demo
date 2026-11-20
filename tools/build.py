@@ -67,7 +67,7 @@ PAGE_CSS = """body{margin:0}
 .note{background:var(--brand-sky);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 24px}"""
 
 
-def page(title, crumb, lead, content, note=""):
+def page(title, crumb, lead, content, note="", dress=False, name=""):
     note_html = f'<p class="note">{html.escape(note)}</p>' if note else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -81,14 +81,47 @@ def page(title, crumb, lead, content, note=""):
 </head>
 <body>
 {band(crumb, title, lead)}
-<main class="doc">
-{note_html}
-{content}
+<main class="doc{' dressed' if dress else ''}">
+{dressed(note_html + content) if dress else note_html + content}
 </main>
+{endband(name) if dress else ''}
 </body>
 </html>
 """
 
+
+
+def slug(text):
+    return re.sub(r"[^a-z0-9]+", "-", re.sub(r"<[^>]+>", "", text).lower()).strip("-")
+
+
+def dressed(content, pills=True):
+    """An interior page in the home page's design moves: its h2 sections as alternating full-width bands,
+    a row of pill tabs to each section, tables as cards (Ray, 2026-11-20 14:45 ET)."""
+    parts = re.split(r"(?=<h2[ >])", content)
+    head, sections = parts[0], parts[1:]
+    tabs, bands = [], []
+    for i, sec in enumerate(sections):
+        title = re.match(r"<h2[^>]*>(.*?)</h2>", sec, re.S).group(1)
+        sid = slug(title)
+        sec = re.sub(r"<h2[^>]*>", f'<h2 id="{sid}">', sec, count=1)
+        tabs.append(f'<li><a href="#{sid}">{re.sub(r"<[^>]+>", "", title).strip()}</a></li>')
+        bands.append(f'<section class="sect {("sky", "", "dots")[i % 3]}"><div class="in">{sec}</div></section>')
+    out = ""
+    if pills and len(tabs) > 1:
+        out += f'<nav class="sect pillrow" aria-label="On this page"><div class="in"><ul class="pills">{"".join(tabs)}</ul></div></nav>'
+    out += f'<section class="sect"><div class="in">{head}</div></section>' + "".join(bands)
+    return out
+
+
+def endband(name):
+    """The closing navy band with a label over it and yellow buttons, on every page but the home page and the branch documents."""
+    second = ('<a class="brand-btn ghost" href="build-log.html">Read the build log</a>' if name == "ask.html"
+              else '<a class="brand-btn ghost" href="ask.html">Ask Morgan</a>')
+    return ('<section class="endband"><div class="in"><p class="brand-label">Entitlement and billing reconciliation</p>'
+            '<h2>See it running</h2><p>The live app and Morgan answer from the same governed metrics, '
+            'on the platform this site describes.</p><div class="ctas">'
+            '<a class="brand-btn" href="./#app">Try the live app</a>' + second + '</div></div></section>')
 
 def morgan_face(cls, size=84, uid="mg"):
     """Morgan's portrait (tools/morgan_face.svg), with its own class, size and gradient ids."""
@@ -183,14 +216,14 @@ def build_log():
     return page("The build log", [("The build log", "")],
                 "How the reconciliation POC was built, step by step with its commands, and how it is proven.",
                 origin + content + '<p class="note">Every step with its values is kept in Pilot, our knowledge base; '
-                'the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>')
+                'the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>', dress=True, name="build-log.html")
 
 
 def next_steps():
     origin, m, content = render(821, strip_header=True)
     return page("Next steps", [("Next steps", "")],
                 "Where the POC goes from here, multi-tenant first; each step builds on what is already running.",
-                origin + content)
+                origin + content, dress=True, name="next-steps.html")
 
 
 def doc_slug(item):
@@ -223,7 +256,7 @@ def documents():
            '.doccard p{margin:6px 0 0;font-size:14px;line-height:1.55}</style>')
     return page("Documents", [("Documents", "")],
                 "The branch documents behind the POC, as kept in Pilot: the agentic development process, shown by its own work.",
-                css + "\n".join(out))
+                css + "\n".join(out), dress=True, name="documents.html")
 
 
 def doc(item):
@@ -314,6 +347,10 @@ def build():
         if name == "index.html":   # Morgan's face where the home page sends people to her (Ray, 2026-11-20 13:06 ET, 2y)
             text = between(text, "morgan-card", morgan_face("card-face", 56, "mgc"), anchor_after='<a class="brand-card" href="ask.html">')
             text = between(text, "morgan-close", morgan_face("close-face", 96, "mgx"), anchor_after='<section class="band navy close">\n    <div class="in">')
+        if name != "index.html":   # the home page's design moves on every page (Ray, 2026-11-20 14:45 ET)
+            text = between(text, "hand-open", '<div class="sect hand">', anchor_before="<main")
+            text = between(text, "hand-close", "</div>", anchor_after="</main>")
+            text = between(text, "endband", endband(name), anchor_before="<!-- brand-footer:start -->")
         if name in PAGE_BANDS:
             crumb, title, lead = PAGE_BANDS[name]
             text = between(text, "page-band", band(crumb, title, lead), anchor_after="<!-- brand-header:end -->")
