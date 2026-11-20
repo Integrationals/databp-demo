@@ -13,7 +13,7 @@ import html, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
-GENERATED = ["tutorial.html"]
+GENERATED = ["tutorial.html", "build-log.html"]
 
 # Private details masked when the tutorial is built for the public site;
 # Pilot keeps the item whole (Ray, 2026-11-19, answer 1a). Order matters.
@@ -77,6 +77,42 @@ pre{{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;pad
 </body>
 </html>
 """
+
+def build_log():
+    """The build log page, from Pilot knowledge 111 item 820: the title, then the body after the item's
+    own header table (its publication notes are for Pilot, not the page)."""
+    import markdown
+    src = (ROOT / "pilot/k111ki820.md").read_text()
+    origin = src.splitlines()[0]
+    body = src.split("\n", 1)[1]
+    title, rest = body.split("\n", 1)
+    parts = rest.split("\n\n")
+    while parts and (not parts[0].strip() or parts[0].lstrip().startswith("|")):
+        parts.pop(0)
+    content = markdown.markdown(title + "\n\n" + "\n\n".join(parts), extensions=["tables"])
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The build log · DataBP POC</title>
+<style>
+body{{margin:0}}
+main{{max-width:960px;margin:0 auto;padding:20px 24px 40px;line-height:1.65;font-size:16px}}
+.crumbs{{font-size:13px;color:var(--brand-muted)}} .crumbs a{{color:var(--brand-muted)}}
+table{{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px}} th,td{{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}}
+</style>
+</head>
+<body>
+<main>
+<div class="crumbs"><a href="./">DataBP demo</a> / The build log</div>
+{origin}
+{content}
+</main>
+</body>
+</html>
+"""
+
 FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">'
 
 
@@ -137,7 +173,7 @@ def a_to_z():
 
 
 def build():
-    result = {"tutorial.html": brand(tutorial())}
+    result = {"tutorial.html": brand(tutorial()), "build-log.html": brand(build_log())}
     for name in PAGES:
         text = (ROOT / name).read_text()
         text = brand(text)
