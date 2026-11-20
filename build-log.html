@@ -73,7 +73,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
     <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a><a href="next-steps.html">Next steps</a>
   </nav>
 </div></header>
-<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
 <section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / The build log</div><h1>The build log</h1><p class="lead">How the reconciliation POC was built, step by step with its commands, and how it is proven.</p></div></section>
 <main class="doc">
@@ -414,7 +414,7 @@ python3 generator/reconcile_landing.py  # SQL Server against Snowflake
 <p>The build was done by Ray Serrano with AI agents doing the hands-on engineering under his decisions: Claude across the platform, Hex's agent on the app's layout. Every step, value and decision was written into a working log as it happened; this build log is drawn from it.</p>
 <p>Problems were handled the same way, by evidence. Production's first build failed because its dbt role could not read two schemas the development role could; the grant was fixed, and a check that Production can read every declared source now runs before every pull request. A Semantic Layer outage was narrowed by excluding each cause with one test, from the token to the warehouse, until it cleared on the provider's side. A published app found stale in a live read led to a fixed close for every Hex change: publish, then read live.</p>
 <h2>8. What comes next</h2>
-<p>The steps from here, multi-tenant first, have their own page: <a href="next-steps.html">Next steps</a>.</p><p class="note">Every step with its values is in <a href="tutorial.html">the build tutorial</a>; the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>
+<p>The steps from here, multi-tenant first, have their own page: <a href="next-steps.html">Next steps</a>.</p><p class="note">Every step with its values is kept in Pilot, our knowledge base; the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>
 </main>
 <!-- brand-footer:start -->
 <footer class="brand-foot"><div class="in">

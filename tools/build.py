@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
-"""Build the DataBP demo site's generated parts from their sources.
+"""Build the DataBP POC site's generated pages from their sources.
 
-Sources: tools/brand.css, tools/header.html, tools/footer.html (the brand),
-and pilot/*.md, each a copy of one Pilot item, its first line naming the
-item and version. Pilot is the source; the copy here is what the page was
-built from. Run from the repository root:
+Sources: tools/brand.css, tools/header.html, tools/footer.html and tools/morgan_face.svg (the look),
+and Pilot items read through the Pilot connector into a folder outside the repository (PILOT_COPIES,
+by default ~/.cache/databp-site/pilot), one file per item named k111ki<item>.md, its first line naming
+the item and version. No Pilot text is committed: only the built pages, with private details masked.
+Run from the repository root:
 
     python3 tools/build.py          rebuild the pages
     python3 tools/build.py --check  exit 1 if any page differs from a rebuild
 """
-import html, re, sys, pathlib
+import html, os, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# The Pilot items the pages are built from are read through the Pilot connector into this folder, outside the
+# repository; no Pilot text is ever committed (Ray, 2026-11-20 13:35 ET: everything goes via the Pilot connector).
+SOURCES = pathlib.Path(os.environ.get("PILOT_COPIES", pathlib.Path.home() / ".cache/databp-site/pilot"))
 PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
-GENERATED = ["tutorial.html", "build-log.html", "documents.html", "next-steps.html"]  # and one page per DOCS item
+GENERATED = ["build-log.html", "documents.html", "next-steps.html"]  # and one page per DOCS item
 
-# Private details masked when the tutorial is built for the public site;
+# Private details masked when a Pilot item is built for the public site;
 # Pilot keeps the item whole (Ray, 2026-11-19, answer 1a). Order matters.
 MASKS = [
     (r"op://[^`\s)]+", "[vault item]"),
@@ -129,7 +133,7 @@ def four_space(text):
 def render(item, strip_header=False):
     """A Pilot item's copy as HTML, masked, its own first heading left to the band."""
     import markdown
-    src = (ROOT / f"pilot/k111ki{item}.md").read_text()
+    src = (SOURCES / f"k111ki{item}.md").read_text()
     origin = src.splitlines()[0]
     body = src.split("\n", 1)[1]
     body = re.sub(r"^\s*# .*\n", "", body, count=1)
@@ -143,21 +147,12 @@ def render(item, strip_header=False):
     return origin, m, markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
 
 
-def tutorial():
-    origin, m, content = render(463)
-    note = (f"Built from Pilot knowledge {m.group(1)} item {m.group(2)}, version {m.group(3)}, as it stands: the working "
-            "log kept while building, every step with its values and decisions. Private details such as addresses, "
-            "identifiers and paths are masked here; Pilot holds the whole.")
-    return page("The build tutorial", [("Build log", "build-log.html"), ("The build tutorial", "")],
-                "Every step as it happened, with its values: the source the build log is drawn from.", origin + content, note)
-
-
 def build_log():
     origin, m, content = render(820, strip_header=True)
     content = content.replace("Next steps (knowledge 111 item 821)", '<a href="next-steps.html">Next steps</a>')
     return page("The build log", [("The build log", "")],
                 "How the reconciliation POC was built, step by step with its commands, and how it is proven.",
-                origin + content + '<p class="note">Every step with its values is in <a href="tutorial.html">the build tutorial</a>; '
+                origin + content + '<p class="note">Every step with its values is kept in Pilot, our knowledge base; '
                 'the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>')
 
 
@@ -249,7 +244,7 @@ def inline(s):
 
 
 def a_to_z():
-    src = (ROOT / "pilot/k111ki809.md").read_text()
+    src = (SOURCES / "k111ki809.md").read_text()
     origin = src.splitlines()[0]
     body = src.split("\n", 1)[1]
     parts = [p.strip() for p in body.split("\n\n") if p.strip()]
@@ -279,7 +274,7 @@ def a_to_z():
 
 
 def build():
-    result = {"tutorial.html": brand(tutorial()), "build-log.html": brand(build_log()),
+    result = {"build-log.html": brand(build_log()),
               "documents.html": brand(documents()), "next-steps.html": brand(next_steps())}
     for d in DOCS:
         result[doc_slug(d[2])] = brand(doc(d[2]))
