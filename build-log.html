@@ -6,11 +6,13 @@
 <title>The build log · DataBP POC</title>
 <style>
 body{margin:0}
-main{max-width:960px;margin:0 auto;padding:20px 24px 40px;line-height:1.65;font-size:16px}
-.crumbs{font-size:13px;color:var(--brand-muted)} .crumbs a{color:var(--brand-muted)}
-code{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
-pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto} pre code{background:none;padding:0}
-table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px} th,td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}
+.doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:anywhere}
+.doc h2{margin-top:36px} .doc h3{margin-top:26px}
+.doc table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px;display:block;overflow-x:auto}
+.doc th,.doc td{border-bottom:1px solid var(--brand-line);padding:6px 8px;text-align:left;vertical-align:top}
+.doc code{font-size:13px;background:#f3f6fa;padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
+.doc pre{background:#f3f6fa;border:1px solid var(--brand-line);border-radius:8px;padding:12px;overflow-x:auto} .doc pre code{background:none;padding:0}
+.note{background:var(--brand-sky);border-radius:12px;padding:12px 16px;font-size:14px;margin:0 0 24px}
 </style>
 <!-- brand-style:start -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
@@ -41,6 +43,11 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--brand-yellow);outli
 .brand-card{background:#fff;border:1px solid var(--brand-line);border-radius:14px;box-shadow:var(--brand-shadow)}
 svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 @media (max-width:640px){.brand-nav a{padding:5px 10px;font-size:13px}}
+.page-band{background:var(--brand-navy);color:#d6deea;padding:44px 24px 40px;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px}
+.page-band .in{max-width:960px;margin:0 auto}
+.page-band .crumbs{font-size:13px;color:#aebbd0;margin:0 0 12px} .page-band .crumbs a{color:#aebbd0}
+.page-band h1{color:#fff;font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin:0 0 10px}
+.page-band .lead{color:var(--brand-yellow);font-weight:600;font-size:clamp(15px,1.8vw,18px);line-height:1.5;margin:0;max-width:62ch}
 </style>
 <!-- brand-style:end -->
 </head>
@@ -49,16 +56,15 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <header class="brand-bar"><div class="in">
   <a class="brand-home" href="./">DataBP <span>POC</span></a>
   <nav class="brand-nav" aria-label="Sections">
-    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a>
+    <a href="./">The app</a><a href="business.html">The business</a><a href="openflow.html">The platform</a><a href="ask.html">Ask Morgan</a><a href="build-log.html">Build log</a><a href="documents.html">Documents</a>
   </nav>
 </div></header>
-<script>(function(){var p=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
+<script>(function(){var p=location.pathname.split('/').pop()||'index.html';if(p.indexOf('doc-')===0)p='documents.html';if(p==='tutorial.html')p='build-log.html';document.querySelectorAll('.brand-nav a').forEach(function(a){var h=a.getAttribute('href');if((h==='./'&&p==='index.html')||h===p)a.setAttribute('aria-current','page');});})();</script>
 <!-- brand-header:end -->
-<main>
-<div class="crumbs"><a href="./">DataBP POC</a> / The build log</div>
-<!-- Pilot knowledge 111 item 820, version 7: The build log: how the DataBP reconciliation POC was built -->
-<h1>The build log: how the DataBP reconciliation POC was built</h1>
-<p>This POC answers one question for a data provider on DataBP: do my records about each subscriber agree, and what do the disagreements cost? It runs end to end on a production-shaped platform: three source systems in SQL Server, change data capture into Snowflake, dbt models and governed metrics, a Hex app and an analyst agent, Morgan, that answers in plain words. Every figure on the site comes from one place, the dbt Semantic Layer, and every figure is checked against an answer key computed independently of the platform.</p>
+<section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / The build log</div><h1>The build log</h1><p class="lead">How the reconciliation POC was built, step by step with its commands, and how it is proven.</p></div></section>
+<main class="doc">
+
+<!-- Pilot knowledge 111 item 820, version 7: The build log: how the DataBP reconciliation POC was built --><p>This POC answers one question for a data provider on DataBP: do my records about each subscriber agree, and what do the disagreements cost? It runs end to end on a production-shaped platform: three source systems in SQL Server, change data capture into Snowflake, dbt models and governed metrics, a Hex app and an analyst agent, Morgan, that answers in plain words. Every figure on the site comes from one place, the dbt Semantic Layer, and every figure is checked against an answer key computed independently of the platform.</p>
 <table>
 <thead>
 <tr>
@@ -363,7 +369,7 @@ python3 generator/reconcile_landing.py  # SQL Server against Snowflake
 <p>The build was done by Ray Serrano with AI agents doing the hands-on engineering under his decisions: Claude across the platform, Hex's agent on the app's layout. Every step, value and decision was written into a working log as it happened; this build log is drawn from it.</p>
 <p>Problems were handled the same way, by evidence. Production's first build failed because its dbt role could not read two schemas the development role could; the grant was fixed, and a check that Production can read every declared source now runs before every pull request. A Semantic Layer outage was narrowed by excluding each cause with one test, from the token to the warehouse, until it cleared on the provider's side. A published app found stale in a live read led to a fixed close for every Hex change: publish, then read live.</p>
 <h2>8. What comes next</h2>
-<p>The same platform takes real feeds: one data provider's SQL Server, Salesforce and usage reports in place of the generator, with the answer key replaced by the provider's own reconciled months. Beyond that, the generator's second phase adds 200 subscribers for volume, and the checks extend to changes since the last close.</p>
+<p>The same platform takes real feeds: one data provider's SQL Server, Salesforce and usage reports in place of the generator, with the answer key replaced by the provider's own reconciled months. Beyond that, the generator's second phase adds 200 subscribers for volume, and the checks extend to changes since the last close.</p><p class="note">Every step with its values is in <a href="tutorial.html">the build tutorial</a>; the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>
 </main>
 <!-- brand-footer:start -->
 <footer class="brand-foot"><div class="in">
