@@ -34,7 +34,7 @@ t "13 every page wears the brand: DataBP's type, the POC bar, the not-a-DataBP-s
 t "14 every generated part matches its source: the brand files and the Pilot item k111ki809" "[ -f $D/tools/build.py ] && (cd $D && python3 tools/build.py --check >/dev/null)"
 t "15 no Pilot copy and no tutorial page in the site: Pilot is read through the connector at build time" "[ ! -e $D/pilot ] && [ ! -e $D/tutorial.html ] && ! grep -lq 'tutorial.html' $D/*.html"
 t "16 reconciliation view: five checks, under-reporting among them, no box text overflowing" "r business.html#reconciliation | grep -q 'Entitled beyond reported' && [ \$(r business.html#reconciliation | grep -o '<g class=\"q\">' | wc -l) -eq 6 ] && python3 $(dirname "$0")/shot.py $D/business.html | grep -q 'overflow: \[\]'"
-t "17 next steps: the multi-tenant Digest Diagram opens its five views, each with five facts, and Up one returns to level 0" "python3 - \"$D\" <<'PY'
+t "17 next steps: the multi-tenant Digest Diagram opens its views, each with five facts, and Up one returns to level 0" "python3 - \"$D\" <<'PY'
 import asyncio,sys
 from playwright.async_api import async_playwright
 async def m(d):
@@ -42,7 +42,7 @@ async def m(d):
         b=await p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox'])
         pg=await b.new_page(); await pg.goto('file://'+d+'/next-steps.html')
         assert (await pg.inner_text('.dd-title')).startswith('Multi-tenant')
-        for v in ['mt-stamp','mt-policy','mt-closed','mt-readers']:
+        for v in ['mt-stamp','mt-maps','mt-closed','mt-readers']:
             await pg.click('[data-go=\"'+v+'\"] >> nth=0', timeout=3000)
             assert len(await pg.query_selector_all('.dd-facts tbody tr'))==5
             assert 'Level 1' in await pg.inner_text('.dd-crumbs')
