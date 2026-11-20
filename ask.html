@@ -284,6 +284,7 @@ async function stream(r,t){
 async function ask(text){
  if(!url||!text.trim())return;
  var c=code.value.trim(); if(!c){add('err','Enter the access code Ray sent you first.');code.focus();return;}
+ stopShine();
  try{sessionStorage.setItem('morgan_code',c);}catch(e){}
  var sg=document.getElementById('sugg'); if(sg)sg.classList.add('folded');  // design D-68
  var isFirst=history.length===0, ho=document.querySelector('.chat-head .face'), OWL=ho?ho.outerHTML.replace('class="face"','class="face bob"'):'';  // CR-27: the first answer explains its wait while it waits
@@ -309,7 +310,11 @@ async function ask(text){
 }
 send.addEventListener('click',function(){ask(ta.value);});
 ta.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(ta.value);}});
-setTimeout(function(){document.getElementById('sugg').classList.add('shine');},600);
+/* The sweep over the four questions starts when they come into view and repeats every 5 seconds until the first question is asked (Ray, 2026-11-20 15:18 to 15:19 ET). */
+var sg=document.getElementById('sugg'),shineTimer=null,shineDone=false;
+function sweep(){if(shineDone)return;sg.classList.remove('shine');void sg.offsetWidth;sg.classList.add('shine');}
+function stopShine(){shineDone=true;if(shineTimer)clearInterval(shineTimer);sg.classList.remove('shine');}
+if('IntersectionObserver' in window){new IntersectionObserver(function(es,ob){es.forEach(function(e){if(e.isIntersecting&&!shineTimer&&!shineDone){sweep();shineTimer=setInterval(sweep,5000);ob.disconnect();}});},{threshold:0.5}).observe(sg);}else{sweep();shineTimer=setInterval(sweep,5000);}
 document.querySelectorAll('.sugg button.s').forEach(function(bt){bt.addEventListener('click',function(){document.getElementById('sugg').classList.remove('open');if(url)ask(bt.textContent);else{ta.value=bt.textContent;}});});
 document.getElementById('sugg-toggle').addEventListener('click',function(){document.getElementById('sugg').classList.toggle('open');});
 })();
