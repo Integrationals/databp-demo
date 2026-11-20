@@ -85,13 +85,20 @@ def page(title, crumb, lead, content, note=""):
 """
 
 
+def morgan_face(cls, size=84, uid="mg"):
+    """Morgan's portrait (tools/morgan_face.svg), with its own class, size and gradient ids."""
+    svg = (ROOT / "tools/morgan_face.svg").read_text().strip()
+    svg = svg.replace('class="morgan"', f'class="morgan {cls}"').replace('width="84" height="84"', f'width="{size}" height="{size}"')
+    return svg.replace('id="mg-', f'id="{uid}-').replace('url(#mg-', f'url(#{uid}-')
+
+
 def band(crumb, title, lead):
     """The navy title band every page but the home page opens with."""
     crumbs = ""
     if crumb:
         trail = "".join(f' / <a href="{h}">{html.escape(t)}</a>' for t, h in crumb[:-1]) + f" / {html.escape(crumb[-1][0])}"
         crumbs = f'<div class="crumbs"><a href="./">DataBP POC</a>{trail}</div>'
-    face = (ROOT / "tools/morgan_face.svg").read_text().strip() if title == "Ask Morgan" else ""
+    face = morgan_face("band-face") if title == "Ask Morgan" else ""
     head = f'<h1>{html.escape(title)}</h1>'
     if face:   # Morgan's portrait beside her name: the human side of the agent (Ray, 2026-11-20 13:02 ET)
         head = f'<div class="band-title">{face}{head}</div>'
@@ -251,6 +258,9 @@ def build():
     for name in PAGES:
         text = (ROOT / name).read_text()
         text = brand(text)
+        if name == "index.html":   # Morgan's face where the home page sends people to her (Ray, 2026-11-20 13:06 ET, 2y)
+            text = between(text, "morgan-card", morgan_face("card-face", 56, "mgc"), anchor_after='<a class="brand-card" href="ask.html">')
+            text = between(text, "morgan-close", morgan_face("close-face", 96, "mgx"), anchor_after='<section class="band navy close">\n    <div class="in">')
         if name in PAGE_BANDS:
             crumb, title, lead = PAGE_BANDS[name]
             text = between(text, "page-band", band(crumb, title, lead), anchor_after="<!-- brand-header:end -->")
