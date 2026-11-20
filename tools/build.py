@@ -106,6 +106,25 @@ def band(crumb, title, lead):
             f'{head}<p class="lead">{html.escape(lead)}</p></div></section>')
 
 
+def four_space(text):
+    """List continuations written with three spaces get four, as Markdown needs; inside a fenced block opened at
+    three spaces every line gains one space, so the code keeps its own indentation."""
+    out, fence = [], None
+    for line in text.split("\n"):
+        lead = len(line) - len(line.lstrip(" "))
+        if fence is None and line.lstrip().startswith("```") and lead == 3:
+            fence = 3
+            out.append(" " + line)
+            continue
+        if fence is not None:
+            out.append(" " + line if line.strip() else line)
+            if line.lstrip().startswith("```") and lead == 3:
+                fence = None
+            continue
+        out.append(re.sub(r"^ {3}(?! )", "    ", line))
+    return "\n".join(out)
+
+
 def render(item, strip_header=False):
     """A Pilot item's copy as HTML, masked, its own first heading left to the band."""
     import markdown
@@ -118,7 +137,7 @@ def render(item, strip_header=False):
         while parts and (not parts[0].strip() or parts[0].lstrip().startswith("|")):
             parts.pop(0)
         body = "\n\n".join(parts)
-    body = re.sub(r"(?m)^ {3}(?! )", "    ", mask(body))   # list continuations: four spaces, as Markdown needs
+    body = four_space(mask(body))
     m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version (\d+): (.*) -->", origin)
     return origin, m, markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
 
