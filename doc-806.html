@@ -77,8 +77,8 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <!-- brand-header:end -->
 <section class="page-band"><div class="in"><div class="crumbs"><a href="./">DataBP POC</a> / <a href="documents.html">Documents</a> / Design document</div><h1>Entitlement and billing reconciliation: design document</h1><p class="lead">The decisions, D-1 to D-24, each with its reason and evidence.</p></div></section>
 <main class="doc">
-<p class="note">The reconciliation (DIG-655). Built from Pilot knowledge 111 item 806, version 47, as kept while building; private details such as addresses, identifiers and paths are masked here.</p>
-<!-- Pilot knowledge 111 item 806, version 47: Entitlement and billing reconciliation: design document --><h3>Design Document</h3>
+<p class="note">The reconciliation (DIG-655). Built from Pilot knowledge 111 item 806, version 50, as kept while building; private details such as addresses, identifiers and paths are masked here.</p>
+<!-- Pilot knowledge 111 item 806, version 50: Entitlement and billing reconciliation: design document --><h3>Design Document</h3>
 <p><em>Branch Delivery Document</em> — <strong>Level 3 — Design Document</strong></p>
 <table>
 <thead>
@@ -98,7 +98,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 </tr>
 <tr>
 <td><strong>References</strong></td>
-<td>Profiling: not yet done, and the next step. In this product-led demo the three source systems do not exist yet, so profiling decides which source data must be created to drive the app: tables, columns, rows and planted cases, generated to this design's specification (Ray, 2026-11-19 10:02 ET; as the DigestCards design states for a system with no source). After it: expand this design, write the implementation guide, then build in the development environment — related records: the design sketch (knowledge 111 item 805); the interview preparation (knowledge 111 item 460); the lab design (knowledge 111 item 459); the demo build tutorial (knowledge 111 item 463); the DataBP project setup (knowledge 111 item 802); Linear DIG-650 and DIG-628</td>
+<td>Profiling: not yet done, and the next step. In this product-led demo the three source systems do not exist yet, so profiling decides which source data must be created to drive the app: tables, columns, rows and planted cases, generated to this design's specification (Ray, 2026-11-19 10:02 ET; as the DigestCards design states for a system with no source). After it: expand this design, write the implementation guide, then build in the development environment — related records: the design sketch (knowledge 111 item 805); the POC's notes on DataBP (knowledge 111 item 460); the lab design (knowledge 111 item 459); the demo build tutorial (knowledge 111 item 463); the DataBP project setup (knowledge 111 item 802); Linear DIG-650 and DIG-628</td>
 </tr>
 <tr>
 <td><strong>Status</strong></td>
@@ -126,7 +126,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <h2>0. Target ERD</h2>
 <p>Not drawn yet. It is drawn as SVG, in crow's-foot notation, from the source-to-target map in section 6.1 once that map is agreed, since the standard writes the map first and draws the diagram from it.</p>
 <h2>1. Purpose</h2>
-<p>This design decides the end product of the DataBP demo and works backwards from it to the data it needs: entitlement and billing reconciliation, a Hex app named for its question with the London Stock Exchange's term for the same check on the customer's side (course log, knowledge 111 item 798, entry 321), for one of DataBP's clients, a data provider, that answers whether the provider's records about each subscriber agree, and what changed since the last month-end close. The problem it serves is DataBP's own headline: "Less than half of contracted market data revenue is ever realized", drained by leakage, errors and audits that recover only a fraction of what they cost (databp.com, "The Problem" and "Resolve Revenue Leaks", read 2026-11-19; DataBP calls the figure an estimate and names no source). Ray, 2026-11-19: "the whole point here ... we must hone in on it." Each of the app's five checks is aimed at one of those causes (D-10, R-5). It is written for Ray, who decides, and for the session that builds it; its audience in the demo is Bin Luo, DataBP's CTO and the hiring manager.</p>
+<p>This design decides the end product of the DataBP demo and works backwards from it to the data it needs: entitlement and billing reconciliation, a Hex app named for its question with the London Stock Exchange's term for the same check on the customer's side (course log, knowledge 111 item 798, entry 321), for one of DataBP's clients, a data provider, that answers whether the provider's records about each subscriber agree, and what changed since the last month-end close. The problem it serves is DataBP's own headline: "Less than half of contracted market data revenue is ever realized", drained by leakage, errors and audits that recover only a fraction of what they cost (databp.com, "The Problem" and "Resolve Revenue Leaks", read 2026-11-19; DataBP calls the figure an estimate and names no source). Ray, 2026-11-19: "the whole point here ... we must hone in on it." Each of the app's five checks is aimed at one of those causes (D-10, R-5). It is written for Ray, who decides, and for the session that builds it; its audience in the demo is Bin Luo, DataBP's CTO.</p>
 <h2>2. Consumer questions</h2>
 <h3>2.1 Questions from consumers</h3>
 <table>
@@ -160,7 +160,7 @@ svg text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 <td>Ray Serrano</td>
 <td>2026-11-18 17:56 ET</td>
 <td>DataBP session</td>
-<td>"determine the most effective way to present which kind of data analysis will be compelling to our audience, Bin, the CTO"</td>
+<td>"determine the most effective way to present which data analysis will be compelling to Bin, DataBP's CTO" (wording edited for the site: Ray, 2026-11-20, answer 2y)</td>
 <td>Present one subscriber whose records disagree, widen to the total, then change a source row live and show the figure move, and the same figure through Claude</td>
 <td>D-2, D-9</td>
 <td>P-2</td>
