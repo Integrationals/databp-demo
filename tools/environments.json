@@ -1,0 +1,3 @@
+{"dev":  {"morgan": "https://nuod35gkrax7pzps6v5az5hcry0oxois.lambda-url.us-east-1.on.aws/", "env": "dev"},
+ "qa":   {"morgan": "", "env": "qa"},
+ "prod": {"morgan": "https://sb7cvpnb27unuey2nb2xnngbn40nzqwb.lambda-url.us-east-1.on.aws/", "env": "production"}}

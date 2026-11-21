@@ -1,6 +1,9 @@
 #!/bin/sh
-# usage: check.sh <site dir>; prints one line per check, PASS or FAIL
-D=$1; r(){ google-chrome --headless=new --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "file://$D/$1" 2>/dev/null; }
+# usage: check.sh <built pages folder> <served address> <environment>; one line per check, PASS or FAIL
+# The pages are read where they are served, over http, never as file:// pages (DIG-657 design D-6, guide G-2).
+D=${1:?usage: check.sh <built pages folder> <served address> <environment>}; B=${2:?usage: check.sh <built pages folder> <served address> <environment>}; B=${B%/}; E=${3:?usage: check.sh <built pages folder> <served address> <environment>}
+R=$(cd "$(dirname "$0")/.." && pwd)
+r(){ google-chrome --headless=new --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$B/$1" 2>/dev/null; }
 t(){ if eval "$2"; then echo "PASS $1"; else echo "FAIL $1"; fi; }
 rows(){ r "$1" | grep -o '<tr><td>' | wc -l; }
 t "1 home page lists business.html and openflow.html" "r index.html | grep -q 'href=\"business.html\"' && r index.html | grep -q 'href=\"openflow.html\"'"
@@ -13,13 +16,13 @@ t "7 business page names the app in the DataBP view and as the reconciliation vi
 t "8 no page mentions the north star" "! grep -qiE 'north[- ]?star' $D/index.html $D/business.html $D/openflow.html"
 t "9 business page level 0 draws the loop with a line legend" "[ -f $D/business.html ] && r business.html | grep -q 'A step of the loop' && r business.html | grep -q '>submitted by the vendor to the exchange<'"
 t "10 openflow page leads back to the home page" "r openflow.html | grep -q '<a class=\"brand-home\" href=\"./\">DataBP'"
-t "11 documents view: each of the four documents opens its sample" "python3 - \"$D\" <<'PY'
+t "11 documents view: each of the four documents opens its sample" "python3 - \"$B\" <<'PY'
 import asyncio,sys
 from playwright.async_api import async_playwright
 async def m(d):
     async with async_playwright() as p:
         b=await p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox'])
-        pg=await b.new_page(); await pg.goto('file://'+d+'/business.html#documents')
+        pg=await b.new_page(); await pg.goto(d+'/business.html#documents')
         for k,t in [('license','Market data license agreement'),('entitlement','Subscriber entitlement'),('usage','Monthly usage report'),('invoice','Invoice')]:
             await pg.click('[data-doc=\"'+k+'\"]', timeout=3000)
             assert await pg.evaluate('document.getElementById(\"doc\").open')
@@ -31,16 +34,16 @@ asyncio.run(m(sys.argv[1]))
 PY"
 t "12 business page: the A to Z summary shows on level 0 only, with five rows" "[ -f $D/business.html ] && [ \$(r business.html | grep -o '<tr class=\"az-r\">' | wc -l) -eq 5 ] && r business.html | grep -q '<section id=\"az\" class=\"az\">' && r business.html#databp | grep -q '<section id=\"az\" class=\"az\" hidden=\"\">'"
 t "13 every page wears the brand: DataBP's type, the POC bar, the not-a-DataBP-site footer, no DataBP logo" "( for f in index.html business.html openflow.html; do grep -q 'family=Poppins' $D/\$f && grep -q 'class=\"brand-bar\"' $D/\$f && grep -q 'Integrationals, as a POC for DataBP' $D/\$f && grep -q 'This is not a DataBP site' $D/\$f && ! grep -qi "databp.com/wp-content" $D/\$f || exit 1; done )"
-t "14 every generated part matches its source: the brand files and the Pilot item k111ki809" "[ -f $D/tools/build.py ] && (cd $D && python3 tools/build.py --check >/dev/null)"
+t "14 every generated part matches its source: the brand files and the Pilot item k111ki809" "[ -f $R/tools/build.py ] && (cd $R && python3 tools/build.py --env prod --check >/dev/null)"
 t "15 no Pilot copy and no tutorial page in the site: Pilot is read through the connector at build time" "[ ! -e $D/pilot ] && [ ! -e $D/tutorial.html ] && ! grep -lq 'tutorial.html' $D/*.html"
 t "16 reconciliation view: five checks, under-reporting among them, no box text overflowing" "r business.html#reconciliation | grep -q 'Entitled beyond reported' && [ \$(r business.html#reconciliation | grep -o '<g class=\"q\">' | wc -l) -eq 6 ] && python3 $(dirname "$0")/shot.py $D/business.html | grep -q 'overflow: \[\]'"
-t "17 next steps: the multi-tenant Digest Diagram opens its views, each with five facts, and Up one returns to level 0" "python3 - \"$D\" <<'PY'
+t "17 next steps: the multi-tenant Digest Diagram opens its views, each with five facts, and Up one returns to level 0" "python3 - \"$B\" <<'PY'
 import asyncio,sys
 from playwright.async_api import async_playwright
 async def m(d):
     async with async_playwright() as p:
         b=await p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox'])
-        pg=await b.new_page(); await pg.goto('file://'+d+'/next-steps.html')
+        pg=await b.new_page(); await pg.goto(d+'/next-steps.html')
         assert (await pg.inner_text('.dd-title')).startswith('Multi-tenant')
         for v in ['mt-stamp','mt-maps','mt-closed','mt-readers']:
             await pg.click('[data-go=\"'+v+'\"] >> nth=0', timeout=3000)
@@ -54,3 +57,9 @@ PY"
 t "18 design moves on every page but the branch documents; the menu in title case, without The app" "( for f in business.html openflow.html ask.html build-log.html documents.html next-steps.html; do grep -q 'class=\"endband\"' $D/\$f && grep -q 'class=\"sect' $D/\$f || exit 1; done; for f in $D/doc-8*.html; do ! grep -q 'class=\"endband\"' \$f || exit 1; done; ! grep -q '>The app</a>' $D/index.html && grep -q '>Build Log</a><a href=\"documents.html\">Documents</a><a href=\"next-steps.html\">Next Steps</a>' $D/index.html )"
 t "19 Ask Morgan points to its four suggested questions and sweeps light across them when in view, every 5 seconds until the first question" "grep -q 'Start with one of her four questions, or ask your own.' $D/ask.html && [ \$(grep -o 'class=\"s\"' $D/ask.html | wc -l) -eq 4 ] && grep -q 'sugg-shine 1.1s ease-out forwards' $D/ask.html && grep -q 'IntersectionObserver' $D/ask.html && grep -q 'setInterval(sweep,5000)' $D/ask.html && grep -q 'stopShine();' $D/ask.html"
 t "20 Ask Morgan: after the first answer, Suggestions is a pill that glitters every 5 seconds while closed" "grep -q 'id=\"sugg-toggle\">Suggestions ›</button>' $D/ask.html && grep -q 'sugg-toggle.tshine::after { animation: sugg-shine' $D/ask.html && grep -q \"classList.contains('folded')&&!sg.classList.contains('open')\" $D/ask.html"
+t "21 Ask Morgan calls its own environment's Morgan (design D-5)" "python3 - \"$R\" \"$E\" \"\$(r ask.html)\" <<'PY'
+import json,re,sys
+e=json.load(open(sys.argv[1]+'/tools/environments.json'))[sys.argv[2]]
+m=re.search(r'id=\"chat\" data-url=\"([^\"]*)\" data-env=\"([^\"]*)\"',sys.argv[3])
+assert m and e['morgan'] and m.group(1)==e['morgan'] and m.group(2)==e['env']
+PY"
