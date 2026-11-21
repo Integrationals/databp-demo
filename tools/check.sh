@@ -3,7 +3,17 @@
 # The pages are read where they are served, over http, never as file:// pages (DIG-657 design D-6, guide G-2).
 D=${1:?usage: check.sh <built pages folder> <served address> <environment>}; B=${2:?usage: check.sh <built pages folder> <served address> <environment>}; B=${B%/}; E=${3:?usage: check.sh <built pages folder> <served address> <environment>}
 R=$(cd "$(dirname "$0")/.." && pwd)
-r(){ google-chrome --headless=new --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$B/$1" 2>/dev/null; }
+r(){ python3 - "$B/$1" 2>/dev/null <<'PY'
+import asyncio, sys
+from playwright.async_api import async_playwright
+async def m(u):   # every page rendered through Playwright, which reaches remote addresses (design D-6; QA certification E-2)
+    async with async_playwright() as p:
+        b = await p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
+        pg = await b.new_page(); await pg.goto(u); await pg.wait_for_timeout(3000)
+        print(await pg.content()); await b.close()
+asyncio.run(m(sys.argv[1]))
+PY
+}
 t(){ if eval "$2"; then echo "PASS $1"; else echo "FAIL $1"; fi; }
 rows(){ r "$1" | grep -o '<tr><td>' | wc -l; }
 t "1 home page lists business.html and openflow.html" "r index.html | grep -q 'href=\"business.html\"' && r index.html | grep -q 'href=\"openflow.html\"'"
