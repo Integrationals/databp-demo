@@ -7,8 +7,11 @@ by default ~/.cache/databp-site/pilot), one file per item named k111ki<item>.md,
 the item and version. No Pilot text is committed: only the built pages, with private details masked.
 Run from the repository root:
 
-    python3 tools/build.py          rebuild the pages
-    python3 tools/build.py --check  exit 1 if any page differs from a rebuild
+    python3 tools/build.py --env prod             rebuild the committed pages, production's
+    python3 tools/build.py --env prod --check     exit 1 if any committed page differs from a rebuild
+    python3 tools/build.py --env dev --out DIR    build for dev (or qa) into DIR, outside the repository
+
+The environment decides only which Morgan Ask Morgan calls, from tools/environments.json (DIG-657 design D-5).
 """
 import html, json, os, re, sys, pathlib
 
@@ -18,6 +21,26 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SOURCES = pathlib.Path(os.environ.get("PILOT_COPIES", pathlib.Path.home() / ".cache/databp-site/pilot"))
 PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
 GENERATED = ["build-log.html", "documents.html", "next-steps.html"]  # and one page per DOCS item
+# Each environment's Morgan (DIG-657 design D-3, D-5; guide G-1): the builder and check 21 read this one file.
+ENVIRONMENTS = json.loads((ROOT / "tools" / "environments.json").read_text())
+USAGE = "build.py: name the environment: --env dev, qa or prod"
+
+
+def environment(argv):
+    name = argv[argv.index("--env") + 1] if "--env" in argv and argv.index("--env") + 1 < len(argv) else None
+    if name not in ENVIRONMENTS:
+        sys.exit(USAGE)
+    return name
+
+
+def morgan(text, env):
+    """Ask Morgan calls its own environment's Morgan (design D-5)."""
+    e = ENVIRONMENTS[env]
+    text, n = re.subn(r'(<div class="chat" id="chat") data-url="[^"]*" data-env="[^"]*"',
+                      lambda m: f'{m.group(1)} data-url="{e["morgan"]}" data-env="{e["env"]}"', text, count=1)
+    if n != 1:
+        sys.exit("build.py: Ask Morgan's chat element was not found in ask.html")
+    return text
 
 # Private details masked when a Pilot item is built for the public site;
 # Pilot keeps the item whole (Ray, 2026-11-19, answer 1a). Order matters.
@@ -337,7 +360,7 @@ def a_to_z():
     return "\n".join(out)
 
 
-def build():
+def build(env):
     result = {"build-log.html": brand(build_log()),
               "documents.html": brand(documents()), "next-steps.html": brand(next_steps())}
     for d in DOCS:
@@ -358,15 +381,29 @@ def build():
         if name == "business.html":
             text = re.sub(r'<section id="az" class="az">.*?</section>\n', "", text, count=1, flags=re.S) if "<!-- az:start -->" not in text else text
             text = between(text, "az", a_to_z(), anchor_before='<div class="bar">')
+        if name == "ask.html":
+            text = morgan(text, env)
         result[name] = text
     return result
 
 if __name__ == "__main__":
-    built = build()
+    env = environment(sys.argv)
+    if env == "prod":
+        out = ROOT   # only production's build is committed (guide G-3)
+    elif "--out" in sys.argv and sys.argv.index("--out") + 1 < len(sys.argv):
+        out = pathlib.Path(sys.argv[sys.argv.index("--out") + 1]).resolve()
+        if out == ROOT or ROOT in out.parents:
+            sys.exit("build.py: --out must be outside the repository for dev and qa")
+    else:
+        sys.exit("build.py: dev and qa build into a folder outside the repository: --out DIR")
+    built = build(env)
     if "--check" in sys.argv:
+        if env != "prod":
+            sys.exit("build.py: --check compares production's build with the committed pages: --env prod")
         stale = [n for n, t in built.items() if (ROOT / n).read_text() != t]
         print("stale: " + ", ".join(stale) if stale else "all pages match their sources")
         sys.exit(1 if stale else 0)
+    out.mkdir(parents=True, exist_ok=True)
     for n, t in built.items():
-        (ROOT / n).write_text(t)
+        (out / n).write_text(t)
     print("built: " + ", ".join(built))
