@@ -215,7 +215,7 @@ def render(item, strip_header=False):
         diagrams.append(json.loads(mt.group(1)))
         return f"\nDIGEST-DIAGRAM-{len(diagrams) - 1}\n"
     body = re.sub(r"^```digest-diagram\n(.*?)\n```$", hold, body, flags=re.S | re.M)
-    # a version is its number, the number amended since on a day, or the day alone (splices record no version)
+    # a version is its number, the number amended since on a day, or the day alone (splices keep no version number)
     m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version ([^:]+): (.*) -->", origin)
     out = markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
     for i, views in enumerate(diagrams):
