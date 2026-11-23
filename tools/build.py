@@ -20,7 +20,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 # repository; no Pilot text is ever committed (Ray, 2026-11-20 13:35 ET: everything goes via the Pilot connector).
 SOURCES = pathlib.Path(os.environ.get("PILOT_COPIES", pathlib.Path.home() / ".cache/databp-site/pilot"))
 PAGES = ["index.html", "business.html", "openflow.html", "ask.html"]
-GENERATED = ["build-log.html", "documents.html", "next-steps.html"]  # and one page per DOCS item
+GENERATED = ["build-log.html", "documents.html", "next-steps.html", "dbt-implementation.html"]  # and one page per DOCS item
 # Each environment's Morgan (DIG-657 design D-3, D-5; guide G-1): the builder and check 21 read this one file.
 ENVIRONMENTS = json.loads((ROOT / "tools" / "environments.json").read_text())
 USAGE = "build.py: name the environment: --env dev, qa or prod"
@@ -77,7 +77,17 @@ DOCS = [   # the branch documents published on the site, by effort, in delivery 
     ("DIG-656", "Morgan, the agent", 817, "Design document", "A pluggable agent service: core, persona and route"),
     ("DIG-656", "Morgan, the agent", 819, "Test plan", "The route's tests and the live probes"),
     ("DIG-656", "Morgan, the agent", 818, "Implementation guide", "Building and deploying the service"),
+    ("WE-2290", "Staging keys to reference", 848, "Design document", "Each staging row's code, hkey and hdiff, after the reference architecture"),
+    ("WE-2290", "Staging keys to reference", 854, "Test plan", "The keys' paths and the test that proves each"),
+    ("WE-2290", "Staging keys to reference", 855, "Implementation guide", "The twelve staging models and silver's keys, step by step"),
+    ("WE-2289", "Silver merged entities", 856, "Design document", "The subscriber and the product merged across the three systems"),
+    ("WE-2289", "Silver merged entities", 857, "Test plan", "The resolution's paths and the test that proves each"),
+    ("WE-2289", "Silver merged entities", 858, "Implementation guide", "The resolution inside silver's subscriber and product, step by step"),
 ]
+# The guide for DataBP's CTO: the dbt implementation, one source table from landing to the Semantic Layer
+# (DIG-659 design, knowledge 111 item 833, D-1 to D-3); its own page, opened from the Build log and Documents.
+DBT_GUIDE = (859, "dbt-implementation.html", "How the reconciliation was implemented in dbt",
+             "One source table, the usage report, followed from landing to the figure the app shows.")
 
 PAGE_CSS = """body{margin:0}
 .doc{max-width:960px;margin:0 auto;padding:32px 24px 56px;line-height:1.7;font-size:16px;overflow-wrap:break-word}
@@ -205,7 +215,8 @@ def render(item, strip_header=False):
         diagrams.append(json.loads(mt.group(1)))
         return f"\nDIGEST-DIAGRAM-{len(diagrams) - 1}\n"
     body = re.sub(r"^```digest-diagram\n(.*?)\n```$", hold, body, flags=re.S | re.M)
-    m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version (\d+): (.*) -->", origin)
+    # a version is its number, the number amended since on a day, or the day alone (splices keep no version number)
+    m = re.match(r"<!-- Pilot knowledge (\d+) item (\d+), version ([^:]+): (.*) -->", origin)
     out = markdown.markdown(body, extensions=["tables", "pymdownx.superfences"])
     for i, views in enumerate(diagrams):
         out = out.replace(f"<p>DIGEST-DIAGRAM-{i}</p>", digest_diagram(views))
@@ -236,10 +247,18 @@ def digest_diagram(views):
 def build_log():
     origin, m, content = render(820, strip_header=True)
     content = content.replace("Next steps (knowledge 111 item 821)", '<a href="next-steps.html">Next steps</a>')
+    content = content.replace(f"{DBT_GUIDE[2]} (knowledge 111 item {DBT_GUIDE[0]})", f'<a href="{DBT_GUIDE[1]}">{DBT_GUIDE[2]}</a>')
     return page("The build log", [("The build log", "")],
                 "How the reconciliation POC was built, step by step with its commands, and how it is proven.",
                 origin + content + '<p class="note">Every step with its values is kept in Pilot, our knowledge base; '
                 'the branch documents behind each decision are in <a href="documents.html">Documents</a>.</p>', dress=True, name="build-log.html")
+
+
+def dbt_guide():
+    """The CTO's guide, dressed in the design moves as the Build log is (DIG-659 design D-1, D-9)."""
+    item, name, title, lead = DBT_GUIDE
+    origin, m, content = render(item)
+    return page(title, [("Documents", "documents.html"), (title, "")], lead, origin + content, dress=True, name=name)
 
 
 def next_steps():
@@ -265,6 +284,9 @@ def documents():
            'code; implementation guides for the steps; then a pull request whose tests are explained one by one, a review, '
            'and a live read after the merge. Claude, an AI agent, wrote these documents and did the engineering; Ray Serrano '
            'made every decision, each one quoted with its time in the documents themselves.</p>']
+    out.append(f'<h2>{html.escape(DBT_GUIDE[2])}</h2><div class="docgrid">'
+               f'<a class="brand-card doccard" href="{DBT_GUIDE[1]}"><span class="kind">The dbt implementation, for a CTO</span>'
+               f'<p>{html.escape(DBT_GUIDE[3])}</p></a></div>')
     for (issue, effort), docs in groups.items():
         out.append(f'<h2>{html.escape(effort)} <span class="pill">{issue}</span></h2><div class="docgrid">')
         for item, kind, gist in docs:
@@ -362,7 +384,8 @@ def a_to_z():
 
 def build(env):
     result = {"build-log.html": brand(build_log()),
-              "documents.html": brand(documents()), "next-steps.html": brand(next_steps())}
+              "documents.html": brand(documents()), "next-steps.html": brand(next_steps()),
+              DBT_GUIDE[1]: brand(dbt_guide())}
     for d in DOCS:
         result[doc_slug(d[2])] = brand(doc(d[2]))
     for name in PAGES:
